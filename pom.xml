@@ -321,34 +321,6 @@
 						<repoToken>RyokNMTsu6SqOLzUr6OwFU6MDo2iUkZOhUtPb</repoToken>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>com.mycila</groupId>
-					<artifactId>license-maven-plugin</artifactId>
-					<version>3.0</version>
-					<configuration>
-						<header>license-header.txt</header>
-						<includes>
-							<include>**/*.java</include>
-						</includes>
-						<excludes>
-							<exclude>license-header.txt</exclude>
-							<exclude>.git/**</exclude>
-							<exclude>OpenMRSFormatter.xml</exclude>
-							<!-- From gitignore -->
-							<exclude>.idea/**</exclude>
-							<exclude>target/**</exclude>
-							<exclude>bin/**</exclude>
-							<exclude>tmp/**</exclude>
-							<exclude>.settings/**</exclude>
-							<exclude>.externalToolBuilders/</exclude>
-							<exclude>build/</exclude>
-							<exclude>bin/</exclude>
-							<exclude>dist/</exclude>
-						</excludes>
-					</configuration>
-					<!-- <executions> <execution> <id>format-license-header</id> <phase>process-sources</phase> 
-						<goals> <goal>format</goal> </goals> </execution> </executions> -->
-				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
