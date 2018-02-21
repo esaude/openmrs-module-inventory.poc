@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+
+	<!-- Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}
+	</package>
+	<author>Guimino Neves</author>
+	<description>
+		${project.parent.description}
+	</description>
+	<updateURL>https://modules.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf
+	</updateURL>
+	<require_version>${openMRSVersion}</require_version>
+	<!-- / Module Properties -->
+
+	<require_modules>
+		<require_module>
+			org.openmrs.module.uiframework
+		</require_module>
+		<require_module version="${openMRSWebServicesVersion}">org.openmrs.module.webservices.rest</require_module>
+	</require_modules>
+
+	<!-- Module Activator -->
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.POCInventoryModuleActivator
+	</activator>
+
+
+	<!-- Adds link to admin page -->
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList
+		</class>
+	</extension>
+
+	<privilege>
+		<name>POC Inventory Module</name>
+		<description>Allows user to manage Inventories</description>
+	</privilege>
+	<privilege>
+		<name>View Drug Packages</name>
+		<description>Able to view Drug Packages</description>
+	</privilege>
+	<privilege>
+		<name>Manage Drug Packages</name>
+		<description>Add Edit and remove Drug Packages</description>
+	</privilege>
+
+
+	<!-- Maps hibernate file's, if present -->
+	<mappingFiles>
+	</mappingFiles>
+
+	<!-- Internationalization -->
+	<!-- All message codes should start with ${project.parent.artifactId}. -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>pt</lang>
+		<file>messages_pt.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
+</module>
+

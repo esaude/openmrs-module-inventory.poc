@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+	<!-- See http://www.liquibase.org/manual/home#available_database_refactorings 
+		for a list of supported elements and attributes -->
+
+	<changeSet id="poc.inventory-api-v1.0.0-1" author="Guimino">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="pocinv_drug_package" />
+			</not>
+		</preConditions>
+		<comment>
+			Creating the POC pocinv_drug_package table
+		</comment>
+		<createTable tableName="pocinv_drug_package">
+			<column name="drug_package_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="barcode" type="char(20)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="total_quantity" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="drug_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+		</createTable>
+		<addForeignKeyConstraint constraintName="pocinv_drug_p_drug_fk" baseTableName="pocinv_drug_package" baseColumnNames="drug_id" referencedTableName="drug" referencedColumnNames="drug_id" />
+		<addForeignKeyConstraint constraintName="pocinv_drug_p_creator_fk" baseTableName="pocinv_drug_package" baseColumnNames="creator" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_drug_p_changed_by_fk" baseTableName="pocinv_drug_package" baseColumnNames="changed_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_drug_p_retired_by_fk" baseTableName="pocinv_drug_package" baseColumnNames="retired_by" referencedTableName="users" referencedColumnNames="user_id" />
+	</changeSet>
+	<changeSet id="poc.inventory-api-v1.0.0-2" author="Guimino">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="pocinv_batch" />
+			</not>
+		</preConditions>
+		<comment>
+			Creating the POC pocinv_batch table
+		</comment>
+		<createTable tableName="pocinv_batch">
+			<column name="batch_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="drug_package_id" type="int">
+				<constraints nullable="false"  />
+			</column>
+			<column name="location_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="recipt_date" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="expire_date" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			
+			<column name="package_quantity" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="package_quantity_units" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="remain_package_quantity_units" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="unbalanced_units_quantity" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+		</createTable>
+		<addForeignKeyConstraint constraintName="pocinv_batch_drug_package_fk" baseTableName="pocinv_batch" baseColumnNames="drug_package_id" referencedTableName="pocinv_drug_package" referencedColumnNames="drug_package_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_location_fk" baseTableName="pocinv_batch" baseColumnNames="location_id" referencedTableName="location" referencedColumnNames="location_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_creator_fk" baseTableName="pocinv_batch" baseColumnNames="creator" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_changed_by_fk" baseTableName="pocinv_batch" baseColumnNames="changed_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_retired_by_fk" baseTableName="pocinv_batch" baseColumnNames="retired_by" referencedTableName="users" referencedColumnNames="user_id" />
+	</changeSet>
+	<changeSet id="poc.inventory-api-v1.0.0-3" author="Guimino">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="pocinv_batch_entry" />
+			</not>
+		</preConditions>
+		<comment>
+			Creating the POC pocinv_batch_entry table
+		</comment>
+		<createTable tableName="pocinv_batch_entry">
+			<column name="batch_entry_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="batch_id" type="int">
+				<constraints nullable="false"  />
+			</column>
+			<column name="quantity" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="batch_operation_type" type="varchar(30)">
+				<constraints nullable="false" />
+			</column>
+			<column name="reversal_requestor_id" type="int"/>
+			<column name="reversed_id" type="int"/>
+			<column name="order_id" type="int"/>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+		</createTable>
+		<addForeignKeyConstraint constraintName="pocinv_batch_entry_batch_fk" baseTableName="pocinv_batch_entry" baseColumnNames="batch_id" referencedTableName="pocinv_batch" referencedColumnNames="batch_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_entry_self1_fk" baseTableName="pocinv_batch_entry" baseColumnNames="reversal_requestor_id" referencedTableName="pocinv_batch_entry" referencedColumnNames="batch_entry_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_entry_self2_fk" baseTableName="pocinv_batch_entry" baseColumnNames="reversed_id" referencedTableName="pocinv_batch_entry" referencedColumnNames="batch_entry_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_entry_creator_fk" baseTableName="pocinv_batch_entry" baseColumnNames="creator" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_entry_changed_by_fk" baseTableName="pocinv_batch_entry" baseColumnNames="changed_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_entry_retired_by_fk" baseTableName="pocinv_batch_entry" baseColumnNames="retired_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_batch_entry_order_fk" baseTableName="pocinv_batch_entry" baseColumnNames="order_id" referencedTableName="orders" referencedColumnNames="order_id" />
+	</changeSet>
+	<changeSet id="poc.inventory-api-v1.0.0-4" author="Guimino">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="pocinv_deliver_note" />
+			</not>
+		</preConditions>
+		<comment>
+			Creating the POC pocinv_deliver_note table
+		</comment>
+		<createTable tableName="pocinv_deliver_note">
+			<column name="deliver_note_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="location_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="origin_document_code" type="varchar(50)">
+				<constraints nullable="false"  />
+			</column>
+			<column name="simam_number" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="recipt_date" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+		</createTable>
+		<addForeignKeyConstraint constraintName="pocinv_dn_location_fk" baseTableName="pocinv_deliver_note" baseColumnNames="retired_by" referencedTableName="location" referencedColumnNames="location_id" />
+		<addForeignKeyConstraint constraintName="pocinv_dn_creator_fk" baseTableName="pocinv_deliver_note" baseColumnNames="creator" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_dn_changed_by_fk" baseTableName="pocinv_deliver_note" baseColumnNames="changed_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_dn_retired_by_fk" baseTableName="pocinv_deliver_note" baseColumnNames="retired_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addUniqueConstraint tableName="pocinv_deliver_note"
+			columnNames="origin_document_code, simam_number" constraintName="pocinv_deliver_note_unique_row" />
+	</changeSet>
+	<changeSet id="poc.inventory-api-v1.0.0-5" author="Guimino">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="pocinv_deliver_note_item" />
+			</not>
+		</preConditions>
+		<comment>
+			Creating the POC Inventory deliver_note_item table
+		</comment>
+		<createTable tableName="pocinv_deliver_note_item">
+			<column name="deliver_note_item_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="deliver_note_id" type="int">
+				<constraints nullable="false"  />
+			</column>
+			<column name="drug_package_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="quantity" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="authorized_quantity" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="requested_quantity" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="unit_price" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="expire_date" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="batch_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="origin_document_code" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="simam_number" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+		</createTable>
+		<addForeignKeyConstraint constraintName="pocinv_dni_dn_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="deliver_note_id" referencedTableName="pocinv_deliver_note" referencedColumnNames="deliver_note_id" />
+		<addForeignKeyConstraint constraintName="pocinv_dni_drug_package_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="drug_package_id" referencedTableName="pocinv_drug_package" referencedColumnNames="drug_package_id" />
+		<addForeignKeyConstraint constraintName="pocinv_dni_batch_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="batch_id" referencedTableName="pocinv_batch" referencedColumnNames="batch_id" />
+		<addForeignKeyConstraint constraintName="pocinv_dni_creator_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="creator" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_dni_changed_by_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="changed_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_dni_retired_by_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="retired_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addUniqueConstraint tableName="pocinv_deliver_note_item"
+			columnNames="origin_document_code, simam_number, drug_package_id" constraintName="pocinv_deliver_note_item_unique_row" />
+	
+	</changeSet>
+	<changeSet id="poc.inventory-api-v1.0.0-6" author="Guimino">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="pocinv_inventory" />
+			</not>
+		</preConditions>
+		<comment>
+			Creating the POC pocinv_inventory table
+		</comment>
+		<createTable tableName="pocinv_inventory">
+			<column name="inventory_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="inventory_date" type="datetime">
+				<constraints nullable="false"  />
+			</column>
+			<column name="batch_id" type="int">
+				<constraints nullable="false"  />
+			</column>
+			<column name="phisical_count" type="int">
+				<constraints nullable="false"  />
+			</column>
+			<column name="system_count" type="int">
+				<constraints nullable="false"  />
+			</column>
+			<column name="inventory_reason" type="varchar(255)" >
+				<constraints nullable="false" />
+			</column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+		</createTable>
+		<addForeignKeyConstraint constraintName="pocinv_inv_creator_fk" baseTableName="pocinv_inventory" baseColumnNames="creator" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_inv_changed_by_fk" baseTableName="pocinv_inventory" baseColumnNames="changed_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_inv_retired_by_fk" baseTableName="pocinv_inventory" baseColumnNames="retired_by" referencedTableName="users" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="pocinv_inv_batch_fk" baseTableName="pocinv_inventory" baseColumnNames="batch_id" referencedTableName="pocinv_batch" referencedColumnNames="batch_id" />
+	</changeSet>
+</databaseChangeLog>
