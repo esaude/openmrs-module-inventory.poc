@@ -1,5 +1,15 @@
 /**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
  *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.inventorypoc.drugpackage.validator;
 
@@ -21,30 +31,6 @@ public class DrugPackageValidator implements Validator {
 		final DrugPackage drugpackage = (DrugPackage) target;
 		if (drugpackage == null) {
 			errors.reject("error.general");
-		} else {
-			// for the following elements Order.hbm.xml says: not-null="true"
-			// ValidationUtils.rejectIfEmpty(errors, "voided", "error.null");
-			// //For DrugOrders, the api will set the concept to drug.concept
-			// if (!DrugOrder.class.isAssignableFrom(order.getClass())) {
-			// ValidationUtils.rejectIfEmpty(errors, "concept",
-			// "Concept.noConceptSelected");
-			// }
-			// ValidationUtils.rejectIfEmpty(errors, "patient", "error.null");
-			// ValidationUtils.rejectIfEmpty(errors, "encounter", "error.null");
-			// ValidationUtils.rejectIfEmpty(errors, "orderer", "error.null");
-			// ValidationUtils.rejectIfEmpty(errors, "urgency", "error.null");
-			// ValidationUtils.rejectIfEmpty(errors, "action", "error.null");
-			//
-			// validateSamePatientInOrderAndEncounter(order, errors);
-			// validateOrderTypeClass(order, errors);
-			// validateDateActivated(order, errors);
-			// validateScheduledDate(order, errors);
-			// ValidateUtil.validateFieldLengths(errors, obj.getClass(),
-			// "orderReasonNonCoded", "accessionNumber",
-			// "commentToFulfiller", "voidReason");
-			//
-			// validateOrderGroupEncounter(order, errors);
-			// validateOrderGroupPatient(order, errors);
 		}
 		
 	}
