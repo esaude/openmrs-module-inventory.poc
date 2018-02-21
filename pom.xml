@@ -25,7 +25,7 @@
 	<scm>
 		<connection>scm:svn:https://github.com/esaude/openmrs-module-inventory.poc.git</connection>
 		<developerConnection>scm:svn:https://github.com/esaude/openmrs-module-inventory.poc.git</developerConnection>
-		<url>https://github.com/esaude/openmrs-module-inventory.poc/</url>
+		<url>https://github.com/esaude/openmrs-module-inventory.poc.git</url>
 		<tag>HEAD</tag>
 	</scm>
 
