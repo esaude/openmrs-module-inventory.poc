@@ -10,12 +10,12 @@ import org.springframework.validation.Validator;
 
 @Handler(supports = { DrugPackage.class })
 public class DrugPackageValidator implements Validator {
-
+	
 	@Override
 	public boolean supports(final Class<?> clazz) {
 		return DrugPackage.class.isAssignableFrom(clazz);
 	}
-
+	
 	@Override
 	public void validate(final Object target, final Errors errors) {
 		final DrugPackage drugpackage = (DrugPackage) target;
@@ -46,6 +46,6 @@ public class DrugPackageValidator implements Validator {
 			// validateOrderGroupEncounter(order, errors);
 			// validateOrderGroupPatient(order, errors);
 		}
-
+		
 	}
 }

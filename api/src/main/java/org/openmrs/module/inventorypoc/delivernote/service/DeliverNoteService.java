@@ -12,23 +12,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface DeliverNoteService extends OpenmrsService {
-
+	
 	public void setDeliverNoteDAO(DeliverNoteDAO deliverNoteDAO);
-
+	
 	public void setDeliverNoteItemDAO(DeliverNoteItemDAO deliverNoteItemDAO);
-
+	
 	public void setDrugPackageService(DrugPackageService drugPackageService);
-
+	
 	public void setBatchService(BatchService batchService);
-
+	
 	public void setLocationService(LocationService locationService);
-
+	
 	public DeliverNote createDeliverNote(DeliverNote deliverNote);
-
+	
 	public void importDeliverNote(DeliverNote deliverNote);
-
+	
 	public DeliverNote findDeliverNoteByOriginDocumentAndSimamNumber(String originDocument, String simamNumber);
-
+	
 	public DeliverNoteItem findDeliverNoteItemByOriginDocumentAndSimamNumberAndDrugPackage(final String originDocument,
-			final String simamNumber, final String drugFnmCode, final Double totalQuantityPerPackage);
+	        final String simamNumber, final String drugFnmCode, final Double totalQuantityPerPackage);
 }

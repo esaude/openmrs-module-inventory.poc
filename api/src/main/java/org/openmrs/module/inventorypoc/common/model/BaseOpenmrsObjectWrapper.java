@@ -23,17 +23,17 @@ import org.openmrs.OpenmrsObject;
  */
 @MappedSuperclass
 public abstract class BaseOpenmrsObjectWrapper implements Serializable, OpenmrsObject {
-
+	
 	private static final long serialVersionUID = 933059070810131693L;
-
+	
 	@Column(name = "uuid", unique = true, nullable = false, length = 38, updatable = false)
 	private String uuid = UUID.randomUUID().toString();
-
+	
 	@Override
 	public String getUuid() {
 		return this.uuid;
 	}
-
+	
 	@Override
 	public void setUuid(final String uuid) {
 		this.uuid = uuid;

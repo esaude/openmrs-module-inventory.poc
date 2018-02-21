@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface InventoryService extends OpenmrsService {
-
+	
 	public void setInventoryDAO(InventoryDAO inventoryDAO);
-
+	
 	void setBatchService(BatchService batchService);
-
+	
 	Inventory createInventory(Inventory inventory);
 }

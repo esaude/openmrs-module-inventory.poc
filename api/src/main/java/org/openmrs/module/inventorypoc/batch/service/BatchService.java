@@ -15,21 +15,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface BatchService extends OpenmrsService {
-
+	
 	public void setBatchDAO(BatchDAO batchDAO);
-
+	
 	public void setBatchEntryDAO(BatchEntryDAO batchEntryDAO);
-
+	
 	public Batch createBatch(Batch batch, BatchOperationType batchOperationType);
-
+	
 	public Batch adjustBatchCurrentQuantity(Batch batch, Double newRemainPackageQuantityUnits);
-
+	
 	public void createWasteDrug(DrugOrder drugOrder, Location location, Double quantity, Date date) throws Exception;
-
+	
 	public void reverseWastedDrug(DrugOrder drugOrder) throws Exception;
-
+	
 	public List<Batch> findBatchesByDrugAndLocationAndNotExpiredDate(Drug drug, Location location, Date date);
-
+	
 	public List<Batch> findAllAvailableStock(Location location, Date currentDate);
-
+	
 }

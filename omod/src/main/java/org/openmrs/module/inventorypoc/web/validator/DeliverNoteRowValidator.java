@@ -17,10 +17,10 @@ import org.springframework.validation.Validator;
  */
 @Component
 public class DeliverNoteRowValidator implements Validator {
-
+	
 	@Autowired
 	private DeliverNoteItemRowValidator deliverNoteItemRowValidator;
-
+	
 	/**
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
@@ -28,7 +28,7 @@ public class DeliverNoteRowValidator implements Validator {
 	public boolean supports(@SuppressWarnings("rawtypes") final Class clazz) {
 		return DeliverNoteRow.class.isAssignableFrom(clazz);
 	}
-
+	
 	/**
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 	 *      org.springframework.validation.Errors)
@@ -42,23 +42,23 @@ public class DeliverNoteRowValidator implements Validator {
 	 */
 	@Override
 	public void validate(final Object obj, final Errors errors) {
-
+		
 		final DeliverNoteRow deliverNoteRow = (DeliverNoteRow) obj;
-
+		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthFacilityName",
-				"inventorypoc.error.deliverNote.healthFacilityName.isEmpty");
-
+		    "inventorypoc.error.deliverNote.healthFacilityName.isEmpty");
+		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "deliveredDate", "inventorypoc.error.deliveredDate.isEmpty");
-
+		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "originDocument",
-				"inventorypoc.error.originDocument.isEmpty");
-
+		    "inventorypoc.error.originDocument.isEmpty");
+		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "simamDocument", "inventorypoc.error.simamDocument.isEmpty");
-
+		
 		if (StringUtils.isNotEmpty(deliverNoteRow.getDeliveredDate())) {
 			this.validateDeliveredDateFormat(deliverNoteRow.getDeliveredDate(), errors);
 		}
-
+		
 		int idx = 0;
 		for (final DeliverNoteItemRow item : deliverNoteRow.getItems()) {
 			errors.pushNestedPath("items[" + idx + "]");
@@ -67,14 +67,15 @@ public class DeliverNoteRowValidator implements Validator {
 			idx++;
 		}
 	}
-
+	
 	private void validateDeliveredDateFormat(final String dateText, final Errors errors) {
-
+		
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
+		
 		try {
 			sdf.parse(dateText);
-		} catch (final ParseException e) {
+		}
+		catch (final ParseException e) {
 			errors.rejectValue("deliveredDate", "inventorypoc.error.date.invalidDateFormat");
 		}
 	}

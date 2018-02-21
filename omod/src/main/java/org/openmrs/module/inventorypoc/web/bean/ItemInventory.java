@@ -6,46 +6,49 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.openmrs.module.inventorypoc.batch.model.Batch;
 
 public class ItemInventory implements Serializable, Comparable<ItemInventory> {
-
+	
 	private static final long serialVersionUID = -1148641711447839190L;
-
+	
 	private final Batch batch;
+	
 	private boolean selected;
+	
 	private Double newQuantity;
+	
 	private String reason;
-
+	
 	public ItemInventory(final Batch batch) {
 		this.batch = batch;
 	}
-
+	
 	public boolean isSelected() {
 		return this.selected;
 	}
-
+	
 	public void setSelected(final boolean selected) {
 		this.selected = selected;
 	}
-
+	
 	public Double getNewQuantity() {
 		return this.newQuantity;
 	}
-
+	
 	public void setNewQuantity(final Double newQuantity) {
 		this.newQuantity = newQuantity;
 	}
-
+	
 	public String getReason() {
 		return this.reason;
 	}
-
+	
 	public void setReason(final String reason) {
 		this.reason = reason;
 	}
-
+	
 	public Batch getBatch() {
 		return this.batch;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -53,7 +56,7 @@ public class ItemInventory implements Serializable, Comparable<ItemInventory> {
 		result = (prime * result) + ((this.batch == null) ? 0 : this.batch.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
@@ -75,10 +78,10 @@ public class ItemInventory implements Serializable, Comparable<ItemInventory> {
 		}
 		return true;
 	}
-
+	
 	@Override
 	public int compareTo(final ItemInventory o) {
-
+		
 		return new CompareToBuilder().append(this.getBatch(), o.getBatch()).toComparison();
 	}
 }

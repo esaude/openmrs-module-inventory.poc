@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.inventorypoc.common.model;
 
-
 import java.util.Date;
 
 import javax.persistence.Column;

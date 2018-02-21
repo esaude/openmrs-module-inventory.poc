@@ -8,14 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface DrugPackageService extends OpenmrsService {
-
+	
 	public void setDrugPackageDAO(DrugPackageDAO drugPackageDAO);
-
+	
 	public DrugPackage saveDrugPackage(DrugPackage drugPackage);
-
+	
 	public DrugPackage fingDrugPackageById(Integer id);
-
+	
 	public DrugPackage findDrugPackageByDrugAndTotalQuantity(final Drug drug, Double totalQuantity);
-
+	
 	public Drug findDrugByDrugFNMCode(String fnmCode);
 }

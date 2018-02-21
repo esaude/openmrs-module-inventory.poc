@@ -14,25 +14,25 @@ import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.common.util.DateUtils;
 
 public class BatchDAOImpl implements BatchDAO {
-
+	
 	private SessionFactory sessionFactory;
-
+	
 	@Override
 	public void setSessionFactory(final SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-
+	
 	@Override
 	public Batch save(final Batch batch) {
 		this.sessionFactory.getCurrentSession().saveOrUpdate(batch);
 		return batch;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Batch> findByDrugAndLocationAndNotExpiredDate(final Drug drug, final Location location, final Date date,
-			final boolean retired) {
-
+	        final boolean retired) {
+		
 		final Criteria searchCriteria = this.sessionFactory.getCurrentSession().createCriteria(Batch.class, "batch");
 		searchCriteria.createAlias("batch.drugPackage", "drugPackage");
 		searchCriteria.add(Restrictions.eq("drugPackage.drug", drug));
@@ -42,32 +42,32 @@ public class BatchDAOImpl implements BatchDAO {
 		searchCriteria.add(Restrictions.gt("batch.expireDate", DateUtils.highDateTime(date)));
 		searchCriteria.addOrder(Order.asc("batch.expireDate"));
 		searchCriteria.addOrder(Order.desc("batch.reciptDate"));
-
+		
 		return searchCriteria.list();
 	}
-
+	
 	@Override
 	public void updateBatches(final List<Batch> batchs) {
 		for (final Batch batch : batchs) {
 			this.sessionFactory.getCurrentSession().update(batch);
 		}
 	}
-
+	
 	@Override
 	public void updateBatch(final Batch batch) {
 		this.sessionFactory.getCurrentSession().update(batch);
 	}
-
+	
 	@Override
 	public void decreaseRemainPackageQuantityUnits(final Batch batch, final Double quantity) {
 		batch.setRemainPackageQuantityUnits(batch.getRemainPackageQuantityUnits() - quantity);
 		this.sessionFactory.getCurrentSession().update(batch);
 	}
-
+	
 	@Override
 	public List<Batch> findByLocationAndAvailableQuantity(final Location location, final Date currentDate,
-			final boolean retired) {
-
+	        final boolean retired) {
+		
 		final Criteria searchCriteria = this.sessionFactory.getCurrentSession().createCriteria(Batch.class, "batch");
 		searchCriteria.setFetchMode("batch.drugPackage", FetchMode.JOIN);
 		searchCriteria.setFetchMode("batch.drugPackage.drug", FetchMode.JOIN);
@@ -78,7 +78,7 @@ public class BatchDAOImpl implements BatchDAO {
 		searchCriteria.add(Restrictions.gt("batch.expireDate", DateUtils.highDateTime(currentDate)));
 		searchCriteria.addOrder(Order.asc("batch.expireDate"));
 		searchCriteria.addOrder(Order.desc("batch.reciptDate"));
-
+		
 		return searchCriteria.list();
 	}
 }

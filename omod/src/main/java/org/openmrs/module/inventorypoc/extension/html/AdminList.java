@@ -20,11 +20,11 @@ import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
 
 /**
- * This class defines the links that will appear on the administration page
- * under the "inventorypoc.title" heading.
+ * This class defines the links that will appear on the administration page under the
+ * "inventorypoc.title" heading.
  */
 public class AdminList extends AdministrationSectionExt {
-
+	
 	/**
 	 * @see AdministrationSectionExt#getMediaType()
 	 */
@@ -32,7 +32,7 @@ public class AdminList extends AdministrationSectionExt {
 	public Extension.MEDIA_TYPE getMediaType() {
 		return Extension.MEDIA_TYPE.html;
 	}
-
+	
 	/**
 	 * @see AdministrationSectionExt#getTitle()
 	 */
@@ -40,7 +40,7 @@ public class AdminList extends AdministrationSectionExt {
 	public String getTitle() {
 		return "inventorypoc.title";
 	}
-
+	
 	/**
 	 * @see AdministrationSectionExt#getLinks()
 	 */
@@ -49,8 +49,8 @@ public class AdminList extends AdministrationSectionExt {
 		final LinkedHashMap<String, String> map = new LinkedHashMap<>();
 		map.put("module/inventorypoc/deliverNote/upload.form", "inventorypoc.import.deliver.note");
 		map.put("module/inventorypoc/stockAdjustment/initForm.form", "inventorypoc.stockAdjustment");
-
+		
 		return map;
 	}
-
+	
 }

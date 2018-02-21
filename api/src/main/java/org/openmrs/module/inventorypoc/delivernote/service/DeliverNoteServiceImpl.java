@@ -22,59 +22,59 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class DeliverNoteServiceImpl extends BaseOpenmrsService implements DeliverNoteService {
-
+	
 	private DeliverNoteDAO deliverNoteDAO;
-
+	
 	private DeliverNoteItemDAO deliverNoteItemDAO;
-
+	
 	private BatchService batchService;
-
+	
 	private DrugPackageService drugPackageService;
-
+	
 	private LocationService locationService;
-
+	
 	@Override
 	public void setDeliverNoteDAO(final DeliverNoteDAO deliverNoteDAO) {
 		this.deliverNoteDAO = deliverNoteDAO;
 	}
-
+	
 	@Override
 	public void setDeliverNoteItemDAO(final DeliverNoteItemDAO deliverNoteItemDAO) {
 		this.deliverNoteItemDAO = deliverNoteItemDAO;
 	}
-
+	
 	@Override
 	public void setDrugPackageService(final DrugPackageService drugPackageService) {
 		this.drugPackageService = drugPackageService;
 	}
-
+	
 	@Override
 	public void setBatchService(final BatchService batchService) {
 		this.batchService = batchService;
 	}
-
+	
 	@Override
 	public void setLocationService(final LocationService locationService) {
 		this.locationService = locationService;
 	}
-
+	
 	@Override
 	public DeliverNote createDeliverNote(final DeliverNote deliverNote) {
-
+		
 		final Location location = this.locationService.getLocation(deliverNote.getLocation().getLocationId());
 		DeliverNote foundDeliverNote = this.deliverNoteDAO
-				.findByOriginDocumentAndSimamNumber(deliverNote.getOriginDocumentCode(), deliverNote.getSimamNumber());
-
+		        .findByOriginDocumentAndSimamNumber(deliverNote.getOriginDocumentCode(), deliverNote.getSimamNumber());
+		
 		if (foundDeliverNote == null) {
 			deliverNote.setLocation(location);
 			deliverNote.setUuid(UUID.randomUUID().toString());
 			foundDeliverNote = this.deliverNoteDAO.save(deliverNote);
 		}
-
+		
 		for (final DeliverNoteItem noteItem : deliverNote.getDeliverNoteItems()) {
 			final DrugPackage drugPackage = this.drugPackageService
-					.fingDrugPackageById(noteItem.getDrugPackage().getId());
-
+			        .fingDrugPackageById(noteItem.getDrugPackage().getId());
+			
 			final Batch batch = new Batch();
 			batch.setReciptDate(foundDeliverNote.getReciptDate());
 			batch.setExpireDate(noteItem.getExpireDate());
@@ -85,7 +85,7 @@ public class DeliverNoteServiceImpl extends BaseOpenmrsService implements Delive
 			batch.setRemainPackageQuantityUnits(batch.getPackageQuantityUnits());
 			batch.setUnBalancedUnitsQuantity(0d);
 			batch.setVersion(1d);
-
+			
 			final DeliverNoteItem deliverNoteItem = new DeliverNoteItem();
 			deliverNoteItem.setBatch(batch);
 			deliverNoteItem.setDeliverNote(foundDeliverNote);
@@ -98,53 +98,53 @@ public class DeliverNoteServiceImpl extends BaseOpenmrsService implements Delive
 			deliverNoteItem.setSimamNumber(noteItem.getSimamNumber());
 			deliverNoteItem.setOriginDocumentCode(noteItem.getOriginDocumentCode());
 			deliverNoteItem.setRequestedQuantity(noteItem.getRequestedQuantity());
-
+			
 			this.batchService.createBatch(batch, BatchOperationType.RECEIPT);
 			this.deliverNoteItemDAO.save(deliverNoteItem);
 		}
 		return foundDeliverNote;
 	}
-
+	
 	@Override
 	public void importDeliverNote(final DeliverNote deliverNote) {
-
+		
 		for (final DeliverNoteItem item : deliverNote.getDeliverNoteItems()) {
-
+			
 			final DrugPackage drugPackage = this.findOrCreateDrugPackage(item.getDrugPackage());
 			item.setDrugPackage(drugPackage);
 		}
 		this.createDeliverNote(deliverNote);
 	}
-
+	
 	private DrugPackage findOrCreateDrugPackage(final DrugPackage drugPackage) {
-
+		
 		final Drug drug = this.drugPackageService.findDrugByDrugFNMCode(drugPackage.getBarcode());
-
+		
 		final DrugPackage foundDrugPackage = this.drugPackageService.findDrugPackageByDrugAndTotalQuantity(drug,
-				drugPackage.getTotalQuantity());
-
+		    drugPackage.getTotalQuantity());
+		
 		if (foundDrugPackage == null) {
 			drugPackage.setDrug(drug);
 			return this.drugPackageService.saveDrugPackage(drugPackage);
 		}
 		return foundDrugPackage;
 	}
-
+	
 	@Override
 	public DeliverNote findDeliverNoteByOriginDocumentAndSimamNumber(final String originDocument,
-			final String simamNumber) {
+	        final String simamNumber) {
 		return this.deliverNoteDAO.findByOriginDocumentAndSimamNumber(originDocument, simamNumber);
 	}
-
+	
 	@Override
 	public DeliverNoteItem findDeliverNoteItemByOriginDocumentAndSimamNumberAndDrugPackage(final String originDocument,
-			final String simamNumber, final String drugFnmCode, final Double totalQuantityPerPackage) {
-
+	        final String simamNumber, final String drugFnmCode, final Double totalQuantityPerPackage) {
+		
 		final Drug drug = this.drugPackageService.findDrugByDrugFNMCode(drugFnmCode);
 		final DrugPackage drugPackage = this.drugPackageService.findDrugPackageByDrugAndTotalQuantity(drug,
-				totalQuantityPerPackage);
-
+		    totalQuantityPerPackage);
+		
 		return this.deliverNoteItemDAO.findByOriginDocumentAndSimamNumberAndDrugPackage(originDocument, simamNumber,
-				drugPackage);
+		    drugPackage);
 	}
 }

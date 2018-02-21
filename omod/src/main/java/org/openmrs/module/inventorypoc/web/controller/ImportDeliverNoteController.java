@@ -39,127 +39,126 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller(ImportDeliverNoteController.MODULE_ID + ".ImportDeliverNote")
 @SessionAttributes({ ImportDeliverNoteController.DELIVER_NOTE })
-
 public class ImportDeliverNoteController {
-
+	
 	public static final String MODULE_ID = "inventorypoc";
-
+	
 	public static final String MODULE_PATH = "/module/" + ImportDeliverNoteController.MODULE_ID;
-
+	
 	public static final String CONTROLLER_PATH = ImportDeliverNoteController.MODULE_PATH + "/deliverNote";
-
+	
 	public static final String UPLOAD_FORM_PATH = ImportDeliverNoteController.CONTROLLER_PATH + "/upload";
-
+	
 	public static final String IMPORT_FORM_PATH = ImportDeliverNoteController.CONTROLLER_PATH + "/import";
-
+	
 	public static final String VALIDATE_FORM_PATH = ImportDeliverNoteController.CONTROLLER_PATH + "/validate";
-
+	
 	public static final String DELIVER_NOTE = "deliverNote";
-
+	
 	public static final String UPLOAD_FILE = "uploadFile";
-
+	
 	@Autowired
 	private XlsToPojoObjectTransformer xlsToPojoObjectTransformer;
-
+	
 	@Autowired
 	private UploadFileValidator uploadFileValidator;
-
+	
 	@Autowired
 	private DeliverNoteRowValidator deliverNoteRowValidator;
-
+	
 	@RequestMapping(value = ImportDeliverNoteController.UPLOAD_FORM_PATH, method = RequestMethod.GET)
 	public void upload(final SessionStatus status) {
 		status.setComplete();
 	}
-
+	
 	@RequestMapping(value = ImportDeliverNoteController.UPLOAD_FORM_PATH, method = RequestMethod.POST)
 	public ModelAndView uploadPOST(final UploadFile uploadFile, final Errors errors, final Model model,
-			final HttpSession session) throws IOException {
-
+	        final HttpSession session) throws IOException {
+		
 		this.uploadFileValidator.validate(uploadFile, errors);
-
+		
 		if (errors.hasErrors()) {
 			return new ModelAndView();
 		}
-
+		
 		final File file = new File(uploadFile.getFile().getName());
 		uploadFile.getFile().transferTo(file);
 		final DeliverNoteRow deliverNote = this.xlsToPojoObjectTransformer.toDeliverNote(file);
-
+		
 		model.addAttribute(ImportDeliverNoteController.DELIVER_NOTE, deliverNote);
-
+		
 		return new ModelAndView(WebUtils.redirect(ImportDeliverNoteController.VALIDATE_FORM_PATH));
 	}
-
+	
 	@RequestMapping(value = ImportDeliverNoteController.VALIDATE_FORM_PATH, method = RequestMethod.GET)
 	public ModelAndView validate(
-			@ModelAttribute(ImportDeliverNoteController.DELIVER_NOTE) final DeliverNoteRow deliverNoteRow,
-			final Errors errors) {
-
+	        @ModelAttribute(ImportDeliverNoteController.DELIVER_NOTE) final DeliverNoteRow deliverNoteRow,
+	        final Errors errors) {
+		
 		this.deliverNoteRowValidator.validate(deliverNoteRow, errors);
-
+		
 		final ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject(ImportDeliverNoteController.DELIVER_NOTE, deliverNoteRow);
 		modelAndView.addObject("hasErrors", errors.hasErrors());
-
+		
 		return modelAndView;
 	}
-
+	
 	@RequestMapping(value = ImportDeliverNoteController.VALIDATE_FORM_PATH, method = RequestMethod.POST)
 	public ModelAndView validatePost(
-			@ModelAttribute(ImportDeliverNoteController.DELIVER_NOTE) final DeliverNoteRow deliverNoteRow,
-			final Errors errors, final Model model) {
-
+	        @ModelAttribute(ImportDeliverNoteController.DELIVER_NOTE) final DeliverNoteRow deliverNoteRow,
+	        final Errors errors, final Model model) {
+		
 		this.deliverNoteRowValidator.validate(deliverNoteRow, errors);
-
+		
 		if (errors.hasErrors()) {
 			return new ModelAndView(ImportDeliverNoteController.VALIDATE_FORM_PATH);
 		}
-
+		
 		this.setDrugNameSystemDesignation(deliverNoteRow);
 		model.addAttribute(ImportDeliverNoteController.DELIVER_NOTE, deliverNoteRow);
-
+		
 		return new ModelAndView(WebUtils.redirect(ImportDeliverNoteController.IMPORT_FORM_PATH));
 	}
-
+	
 	@RequestMapping(value = ImportDeliverNoteController.IMPORT_FORM_PATH, method = RequestMethod.GET)
 	public ModelAndView importGet(
-			@ModelAttribute(ImportDeliverNoteController.DELIVER_NOTE) final DeliverNoteRow deliverNote) {
-
+	        @ModelAttribute(ImportDeliverNoteController.DELIVER_NOTE) final DeliverNoteRow deliverNote) {
+		
 		return new ModelAndView();
 	}
-
+	
 	@RequestMapping(value = ImportDeliverNoteController.IMPORT_FORM_PATH, method = RequestMethod.POST)
 	public ModelAndView importPost(
-			@ModelAttribute(ImportDeliverNoteController.DELIVER_NOTE) final DeliverNoteRow deliverNote)
-					throws ParseException {
-
+	        @ModelAttribute(ImportDeliverNoteController.DELIVER_NOTE) final DeliverNoteRow deliverNote)
+	        throws ParseException {
+		
 		final DeliverNote deliverNoteToImport = this.generateDeliverNote(deliverNote);
 		final DeliverNoteService deliverNoteService = Context.getService(DeliverNoteService.class);
 		deliverNoteService.importDeliverNote(deliverNoteToImport);
-
+		
 		final ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("openmrs_msg", "inventorypoc.imported");
-
+		
 		return modelAndView;
 	}
-
+	
 	private DeliverNote generateDeliverNote(final DeliverNoteRow deliverNoteRow) throws ParseException {
-
+		
 		final DeliverNote toImport = new DeliverNote();
-
+		
 		final SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy");
 		final Date deliverDate = sfd.parse(deliverNoteRow.getDeliveredDate());
 		toImport.setReciptDate(deliverDate);
 		toImport.setOriginDocumentCode(deliverNoteRow.getOriginDocument());
 		toImport.setSimamNumber(deliverNoteRow.getSimamDocument());
 		toImport.setLocation(Context.getLocationService().getDefaultLocation());
-
+		
 		for (final DeliverNoteItemRow itemRow : deliverNoteRow.getItems()) {
-
+			
 			final DeliverNoteItem noteItem = new DeliverNoteItem();
 			noteItem.setDeliverNote(toImport);
-
+			
 			noteItem.setRequestedQuantity(Double.valueOf(itemRow.getRequestedQuantity()));
 			noteItem.setAuthorizedQuantity(Double.valueOf(itemRow.getAuthorizedQuantity()));
 			noteItem.setQuantity(Double.valueOf(itemRow.getDeliveredQuantity()));
@@ -168,17 +167,17 @@ public class ImportDeliverNoteController {
 			noteItem.setOriginDocumentCode(toImport.getOriginDocumentCode());
 			noteItem.setExpireDate(sfd.parse(itemRow.getExpirationDate()));
 			noteItem.setDrugPackage(
-					new DrugPackage(itemRow.getFnmCode(), Double.valueOf(itemRow.getTotalPackageUnits())));
+			        new DrugPackage(itemRow.getFnmCode(), Double.valueOf(itemRow.getTotalPackageUnits())));
 			toImport.AddDeliverNoteItem(noteItem);
 		}
 		return toImport;
 	}
-
+	
 	private void setDrugNameSystemDesignation(final DeliverNoteRow deliverNoteRow) {
-
+		
 		final DrugPackageService drugPackageService = Context.getService(DrugPackageService.class);
 		for (final DeliverNoteItemRow item : deliverNoteRow.getItems()) {
-
+			
 			final Drug drug = drugPackageService.findDrugByDrugFNMCode(item.getFnmCode());
 			item.setDrugNameSytemDesignation(drug != null ? StringUtils.upperCase(drug.getName()) : StringUtils.EMPTY);
 		}
