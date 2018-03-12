@@ -23,8 +23,8 @@
 	</organization>
 
 	<scm>
-		<connection>scm:https://github.com/esaude/openmrs-module-inventory.poc.git</connection>
-		<developerConnection>scm:https://github.com/esaude/openmrs-module-inventory.poc.git</developerConnection>
+		<connection>scm:git:https://github.com/esaude/openmrs-module-inventory.poc.git</connection>
+		<developerConnection>scm:git:https://github.com/esaude/openmrs-module-inventory.poc.git</developerConnection>
 		<url>https://github.com/esaude/openmrs-module-inventory.poc</url>
 		<tag>HEAD</tag>
 	</scm>
