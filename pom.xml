@@ -177,7 +177,7 @@
 		<repository>
 			<id>bintray-esaude-maven</id>
 			<name>esaude-maven</name>
-			<url>https://api.bintray.com/maven/esaude/maven/openmrs-module-esaudemetadata/;publish=1</url>
+			<url>https://api.bintray.com/maven/esaude/maven/openmrs-module-inventory.poc/;publish=1</url>
 		</repository>
 	</distributionManagement>
 
