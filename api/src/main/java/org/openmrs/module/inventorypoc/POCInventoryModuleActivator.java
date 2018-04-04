@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.inventorypoc;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.ModuleActivator;
@@ -22,9 +21,9 @@ import org.openmrs.module.ModuleActivator;
  * This class contains the logic that is run every time this module is either started or stopped.
  */
 public class POCInventoryModuleActivator implements ModuleActivator {
-
+	
 	protected Log log = LogFactory.getLog(this.getClass());
-
+	
 	/**
 	 * @see ModuleActivator#willRefreshContext()
 	 */
@@ -32,7 +31,7 @@ public class POCInventoryModuleActivator implements ModuleActivator {
 	public void willRefreshContext() {
 		this.log.info("Refreshing POC Inventory Module");
 	}
-
+	
 	/**
 	 * @see ModuleActivator#contextRefreshed()
 	 */
@@ -40,7 +39,7 @@ public class POCInventoryModuleActivator implements ModuleActivator {
 	public void contextRefreshed() {
 		this.log.info("POC Inventory Module refreshed");
 	}
-
+	
 	/**
 	 * @see ModuleActivator#willStart()
 	 */
@@ -48,7 +47,7 @@ public class POCInventoryModuleActivator implements ModuleActivator {
 	public void willStart() {
 		this.log.info("Starting POC Inventory Module");
 	}
-
+	
 	/**
 	 * @see ModuleActivator#started()
 	 */
@@ -56,7 +55,7 @@ public class POCInventoryModuleActivator implements ModuleActivator {
 	public void started() {
 		this.log.info("POC Inventory Module started");
 	}
-
+	
 	/**
 	 * @see ModuleActivator#willStop()
 	 */
@@ -64,7 +63,7 @@ public class POCInventoryModuleActivator implements ModuleActivator {
 	public void willStop() {
 		this.log.info("Stopping POC Inventory Module");
 	}
-
+	
 	/**
 	 * @see ModuleActivator#stopped()
 	 */
@@ -72,5 +71,5 @@ public class POCInventoryModuleActivator implements ModuleActivator {
 	public void stopped() {
 		this.log.info("POC Inventory Module stopped");
 	}
-
+	
 }

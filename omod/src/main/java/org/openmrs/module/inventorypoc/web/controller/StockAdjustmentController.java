@@ -29,48 +29,48 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller(StockAdjustmentController.MODULE_ID + ".StockAdjustment")
 @SessionAttributes({ "inventory" })
 public class StockAdjustmentController {
-
+	
 	public static final String MODULE_ID = "inventorypoc";
-
+	
 	@Autowired
 	private InventoryValidator inventoryValidator;
-
+	
 	@RequestMapping(value = { "/module/inventorypoc/stockAdjustment/initForm" }, method = RequestMethod.GET)
 	public ModelAndView initForm(final SessionStatus status, final Model model) {
 		final List<Batch> availableStock = Context.getService(BatchService.class)
-				.findAllAvailableStock(Context.getLocationService().getDefaultLocation(), new Date());
-
+		        .findAllAvailableStock(Context.getLocationService().getDefaultLocation(), new Date());
+		
 		final StockAdjust inventory = this.toInventory(availableStock);
 		model.addAttribute("inventory", inventory);
 		status.setComplete();
-
+		
 		return new ModelAndView();
 	}
-
+	
 	@RequestMapping(value = { "/module/inventorypoc/stockAdjustment/initForm" }, method = RequestMethod.POST)
 	public ModelAndView initFormPost(@ModelAttribute("inventory") final StockAdjust inventory, final Errors errors) {
-
+		
 		this.inventoryValidator.validate(inventory, errors);
-
+		
 		if (errors.hasErrors()) {
 			return new ModelAndView();
 		}
-
+		
 		return new ModelAndView(WebUtils.redirect("adjust"));
 	}
-
+	
 	@RequestMapping(value = { "/module/inventorypoc/stockAdjustment/adjust" }, method = RequestMethod.GET)
 	public ModelAndView adjust() {
-
+		
 		return new ModelAndView();
 	}
-
+	
 	@RequestMapping(value = { "/module/inventorypoc/stockAdjustment/adjust" }, method = RequestMethod.POST)
 	public ModelAndView adjustPost(@ModelAttribute("inventory") final StockAdjust stockAdjust) {
-
+		
 		final InventoryService inventoryService = Context.getService(InventoryService.class);
 		for (final ItemInventory item : stockAdjust.getItems()) {
-
+			
 			if (item.isSelected()) {
 				final Inventory inventory = new Inventory();
 				inventory.setBatch(item.getBatch());
@@ -82,18 +82,18 @@ public class StockAdjustmentController {
 		}
 		final ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("openmrs_msg", "inventorypoc.transactionSuccess");
-
+		
 		return modelAndView;
 	}
-
+	
 	@ModelAttribute("inventory")
 	public StockAdjust getVisitor(final HttpServletRequest request) {
 		return this.toInventory(Context.getService(BatchService.class)
-				.findAllAvailableStock(Context.getLocationService().getDefaultLocation(), new Date()));
+		        .findAllAvailableStock(Context.getLocationService().getDefaultLocation(), new Date()));
 	}
-
+	
 	private StockAdjust toInventory(final List<Batch> batchs) {
-
+		
 		final List<ItemInventory> items = new ArrayList<>();
 		for (final Batch batch : batchs) {
 			items.add(new ItemInventory(batch));
