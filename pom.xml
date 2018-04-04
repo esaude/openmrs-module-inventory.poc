@@ -147,6 +147,11 @@
 			<name>OpenMRS Nexus Repository</name>
 			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
 		</repository>
+		<repository>
+			<id>bintray-esaude-maven</id>
+			<name>esaude-maven</name>
+			<url>https://dl.bintray.com/esaude/maven</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -158,6 +163,22 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</pluginRepository>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>bintray-esaude-maven</id>
+			<name>bintray-plugins</name>
+			<url>https://dl.bintray.com/esaude/maven</url>
+		</pluginRepository>
 	</pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<id>bintray-esaude-maven</id>
+			<name>esaude-maven</name>
+			<url>https://api.bintray.com/maven/esaude/maven/openmrs-module-esaudemetadata/;publish=1</url>
+		</repository>
+	</distributionManagement>
 
 </project>
