@@ -48,4 +48,5 @@ public interface BatchService extends OpenmrsService {
 	
 	public List<Batch> findAllAvailableStock(Location location, Date currentDate);
 	
+	Batch findBatchById(Integer batchId);
 }

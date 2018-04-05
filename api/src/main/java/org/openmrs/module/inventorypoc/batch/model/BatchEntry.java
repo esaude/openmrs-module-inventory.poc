@@ -65,7 +65,21 @@ public class BatchEntry extends BaseOpenmrsMetadataWrapper implements Comparable
 	
 	public enum BatchOperationType {
 		
-		ADJUSTMENT, DISPOSED, DISTRIBUTION, RECEIPT, RETURN, TRANSFER, INITIAL
+		POSETIVE_ADJUSTMENT,
+		
+		NEGATIVE_ADJUSTMENT,
+		
+		RECEIPT,
+		
+		DISTRIBUTION,
+		
+		TRANSFER,
+		
+		RETURN,
+		
+		INITIAL,
+		
+		DISPOSED
 	}
 	
 	public BatchEntry() {

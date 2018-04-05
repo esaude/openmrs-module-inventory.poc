@@ -37,4 +37,6 @@ public interface BatchDAO {
 	
 	public List<Batch> findByLocationAndAvailableQuantity(Location location, Date currentDate, boolean retired);
 	
+	Batch findById(Integer batchId);
+	
 }

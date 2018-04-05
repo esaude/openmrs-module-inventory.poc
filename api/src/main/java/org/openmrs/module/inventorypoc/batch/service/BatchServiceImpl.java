@@ -27,8 +27,10 @@ import org.openmrs.module.inventorypoc.batch.dao.BatchEntryDAO;
 import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.batch.model.BatchEntry;
 import org.openmrs.module.inventorypoc.batch.model.BatchEntry.BatchOperationType;
+import org.openmrs.module.inventorypoc.batch.validation.BatchValidator;
 import org.openmrs.module.inventorypoc.common.util.MappedEncounterTypes;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -37,6 +39,9 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 	private BatchDAO batchDAO;
 	
 	private BatchEntryDAO batchEntryDAO;
+	
+	@Autowired
+	private BatchValidator batchValidator;
 	
 	private static final Double ZERO_DOUBLE_VALUE = Double.valueOf(0);
 	
@@ -122,10 +127,19 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 	@Override
 	public Batch adjustBatchCurrentQuantity(final Batch batch, final Double newRemainPackageQuantityUnits) {
 		
-		batch.setRemainPackageQuantityUnits(newRemainPackageQuantityUnits);
+		this.batchValidator.validateAdjustments(batch, newRemainPackageQuantityUnits);
 		
-		final BatchEntry batchEntry = new BatchEntry(batch, BatchOperationType.ADJUSTMENT,
-		        newRemainPackageQuantityUnits);
+		Double deltaQuantity = newRemainPackageQuantityUnits - batch.getRemainPackageQuantityUnits();
+		batch.setRemainPackageQuantityUnits(batch.getRemainPackageQuantityUnits() + deltaQuantity);
+		
+		BatchOperationType batchOperationType = BatchOperationType.POSETIVE_ADJUSTMENT;
+		if (deltaQuantity < 0) {
+			batchOperationType = BatchOperationType.NEGATIVE_ADJUSTMENT;
+			deltaQuantity = deltaQuantity * -1;
+		}
+		
+		final BatchEntry batchEntry = new BatchEntry(batch, batchOperationType, deltaQuantity);
+		
 		this.batchEntryDAO.save(batchEntry);
 		this.batchDAO.save(batch);
 		
@@ -147,5 +161,10 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 		
 		return batch;
 		
+	}
+	
+	@Override
+	public Batch findBatchById(final Integer batchId) {
+		return this.batchDAO.findById(batchId);
 	}
 }
