@@ -47,19 +47,6 @@
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 	</properties>
 
-	<distributionManagement>
-		<repository>
-			<id>openmrs-repo-modules</id>
-			<name>Modules</name>
-			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/modules</url>
-		</repository>
-		<snapshotRepository>
-			<id>openmrs-repo-snapshots</id>
-			<name>Modules</name>
-			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<dependencyManagement>
 		<dependencies>
 
@@ -210,11 +197,9 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.5</version>
+					<version>2.5.1</version>
 					<configuration>
-						<useReleaseProfile>false</useReleaseProfile>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
-						<arguments>-Prelease</arguments>
 						<tagNameFormat>@{project.version}</tagNameFormat>
 					</configuration>
 				</plugin>
@@ -473,6 +458,11 @@
 			<name>OpenMRS Nexus Repository</name>
 			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
 		</repository>
+		<repository>
+			<id>bintray-esaude-maven</id>
+			<name>esaude-maven</name>
+			<url>https://dl.bintray.com/esaude/maven</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -484,5 +474,21 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</pluginRepository>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>bintray-esaude-maven</id>
+			<name>bintray-plugins</name>
+			<url>https://dl.bintray.com/esaude/maven</url>
+		</pluginRepository>
 	</pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<id>bintray-esaude-maven</id>
+			<name>esaude-maven</name>
+			<url>https://api.bintray.com/maven/esaude/maven/openmrs-module-inventory.poc/;publish=1</url>
+		</repository>
+	</distributionManagement>
 </project>
