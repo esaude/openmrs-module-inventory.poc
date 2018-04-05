@@ -44,20 +44,14 @@
 				<tr>
 					<th colspan="1"><spring:message
 							code="inventorypoc.deliveryDate" /></th>
-					<td colspan="7">${deliverNote.deliveredDate}<springform:errors
-							path="deliveredDate" cssClass="error" />
-					</td>
-				</tr>
-				<tr>
-					<th><spring:message code="inventorypoc.originDocument" /></th>
-					<td colspan="7">${deliverNote.originDocument}<springform:errors
-							path="originDocument" cssClass="error" />
+					<td colspan="7">${deliverNote.deliveryDate}<springform:errors
+							path="deliveryDate" cssClass="error" />
 					</td>
 				</tr>
 				<tr>
 					<th><spring:message code="inventorypoc.simamCode" /></th>
-					<td colspan="7">${deliverNote.simamDocument}<springform:errors
-							path="simamDocument" cssClass="error" />
+					<td colspan="7">${deliverNote.simamNumber}<springform:errors
+							path="simamNumber" cssClass="error" />
 					</td>
 				</tr>
 				<tr>
@@ -72,7 +66,9 @@
 					<th><spring:message code="inventorypoc.authorizedQuantity" /></th>
 					<th><spring:message code="inventorypoc.dispensedQuantity" /></th>
 					<th><spring:message code="inventorypoc.unitPrice" /></th>
+					<th><spring:message code="inventorypoc.lot.number" /></th>
 					<th><spring:message code="inventorypoc.validity" /></th>
+					<th><spring:message code="inventorypoc.token.number" /></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -86,7 +82,9 @@
 						<td align="right">${item.authorizedQuantity}</td>
 						<td align="right">${item.deliveredQuantity}</td>
 						<td align="right">${item.unitPrice}</td>
-						<td>${item.expirationDate}</td>
+						<td>${item.lotNumber}</td>
+						<td>${item.expireDate}</td>
+						<td>${item.tokenNumber}</td>
 					</tr>
 				</c:forEach>
 			</tbody>
