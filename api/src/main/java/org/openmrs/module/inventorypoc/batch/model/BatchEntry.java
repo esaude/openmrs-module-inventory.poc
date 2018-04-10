@@ -64,7 +64,6 @@ public class BatchEntry extends BaseOpenmrsMetadataWrapper implements Comparable
 	private Order order;
 	
 	public enum BatchOperationType {
-		
 		POSETIVE_ADJUSTMENT,
 		
 		NEGATIVE_ADJUSTMENT,

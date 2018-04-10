@@ -144,6 +144,7 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 		}
 		
 		final BatchEntry batchEntry = new BatchEntry(batch, batchOperationType, deltaQuantity);
+		batch.setRemainPackageQuantityUnits(newRemainPackageQuantityUnits);
 		
 		this.batchEntryDAO.save(batchEntry);
 		this.batchDAO.save(batch);
@@ -165,7 +166,6 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 		this.batchEntryDAO.save(batchEntry);
 		
 		return batch;
-		
 	}
 	
 	@Override
