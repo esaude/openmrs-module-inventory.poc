@@ -27,6 +27,7 @@ public class ItemInventoryValidator implements Validator {
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "reason", "inventorypoc.stockAdjustment.error.reason");
 			this.validateDoubleNumber(item.getNewQuantity(), errors);
 			this.validateNewQuantityMaxAllowed(item, errors);
+			this.validateNewQuantityDifferentActualQuantity(item, errors);
 		}
 	}
 	
@@ -45,6 +46,17 @@ public class ItemInventoryValidator implements Validator {
 				errors.rejectValue("newQuantity",
 				    "inventorypoc.stockAdjustment.error.newQuantityGreaterThanInitialQuantity",
 				    new Double[] { packageQuantityUnits }, null);
+			}
+		}
+	}
+	
+	private void validateNewQuantityDifferentActualQuantity(final ItemInventory item, final Errors errors) {
+		
+		if (item.getNewQuantity() != null) {
+			final Double remainingQuantities = item.getBatch().getRemainPackageQuantityUnits();
+			if (remainingQuantities.compareTo(item.getNewQuantity()) == 0) {
+				errors.rejectValue("newQuantity",
+				    "inventorypoc.stockAdjustment.error.newQuantityShoulBeDifferentToActualRemainingQuantity");
 			}
 		}
 	}

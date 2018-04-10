@@ -20,6 +20,7 @@ import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.inventorypoc.batch.dao.BatchDAO;
@@ -27,8 +28,10 @@ import org.openmrs.module.inventorypoc.batch.dao.BatchEntryDAO;
 import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.batch.model.BatchEntry;
 import org.openmrs.module.inventorypoc.batch.model.BatchEntry.BatchOperationType;
+import org.openmrs.module.inventorypoc.batch.validation.BatchValidator;
 import org.openmrs.module.inventorypoc.common.util.MappedEncounterTypes;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -37,6 +40,9 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 	private BatchDAO batchDAO;
 	
 	private BatchEntryDAO batchEntryDAO;
+	
+	@Autowired
+	private BatchValidator batchValidator;
 	
 	private static final Double ZERO_DOUBLE_VALUE = Double.valueOf(0);
 	
@@ -68,7 +74,9 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 		    date, false);
 		
 		if (batches.isEmpty()) {
-			// TODO: should find a way to waste drugs without initial inventory
+			
+			throw new APIException(Context.getMessageSourceService().getMessage("inventorypoc.error.noStockAvailablity",
+			    new String[] { drugOrder.getDrug().getDisplayName() }, Context.getLocale()));
 		} else {
 			this.processForExistingBatches(drugOrder, batches, quantity);
 		}
@@ -92,7 +100,9 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 				wastedQuantity = wastedQuantity - entryQuantity;
 				
 			} else {
-				break;
+				throw new APIException(
+				        Context.getMessageSourceService().getMessage("inventorypoc.error.insuficientStock.availability",
+				            new String[] { drugOrder.getDrug().getDisplayName() }, Context.getLocale()));
 			}
 		}
 	}
@@ -122,10 +132,20 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 	@Override
 	public Batch adjustBatchCurrentQuantity(final Batch batch, final Double newRemainPackageQuantityUnits) {
 		
+		this.batchValidator.validateAdjustments(batch, newRemainPackageQuantityUnits);
+		
+		Double deltaQuantity = newRemainPackageQuantityUnits - batch.getRemainPackageQuantityUnits();
+		batch.setRemainPackageQuantityUnits(batch.getRemainPackageQuantityUnits() + deltaQuantity);
+		
+		BatchOperationType batchOperationType = BatchOperationType.POSETIVE_ADJUSTMENT;
+		if (deltaQuantity < 0) {
+			batchOperationType = BatchOperationType.NEGATIVE_ADJUSTMENT;
+			deltaQuantity = deltaQuantity * -1;
+		}
+		
+		final BatchEntry batchEntry = new BatchEntry(batch, batchOperationType, deltaQuantity);
 		batch.setRemainPackageQuantityUnits(newRemainPackageQuantityUnits);
 		
-		final BatchEntry batchEntry = new BatchEntry(batch, BatchOperationType.ADJUSTMENT,
-		        newRemainPackageQuantityUnits);
 		this.batchEntryDAO.save(batchEntry);
 		this.batchDAO.save(batch);
 		
@@ -146,6 +166,10 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 		this.batchEntryDAO.save(batchEntry);
 		
 		return batch;
-		
+	}
+	
+	@Override
+	public Batch findBatchById(final Integer batchId) {
+		return this.batchDAO.findById(batchId);
 	}
 }

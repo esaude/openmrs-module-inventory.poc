@@ -37,7 +37,13 @@ public class BatchDAOImpl implements BatchDAO {
 	
 	@Override
 	public Batch save(final Batch batch) {
-		this.sessionFactory.getCurrentSession().saveOrUpdate(batch);
+		// TODO save or update does not working quite well for update.
+		// it is strange
+		if (batch.getId() == null) {
+			this.sessionFactory.getCurrentSession().save(batch);
+		} else {
+			this.sessionFactory.getCurrentSession().update(batch);
+		}
 		return batch;
 	}
 	
@@ -91,5 +97,14 @@ public class BatchDAOImpl implements BatchDAO {
 		searchCriteria.addOrder(Order.asc("batch.expireDate"));
 		
 		return searchCriteria.list();
+	}
+	
+	@Override
+	public Batch findById(final Integer batchId) {
+		
+		final Criteria searchCriteria = this.sessionFactory.getCurrentSession().createCriteria(Batch.class, "batch");
+		searchCriteria.add(Restrictions.eq("batch.batchId", batchId));
+		
+		return (Batch) searchCriteria.uniqueResult();
 	}
 }
