@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.inventorypoc.delivernote.service;
 
+import java.util.Date;
+
+import org.openmrs.Drug;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.inventorypoc.batch.service.BatchService;
@@ -40,8 +43,12 @@ public interface DeliverNoteService extends OpenmrsService {
 	
 	public void importDeliverNote(DeliverNote deliverNote);
 	
-	public DeliverNote findDeliverNoteByOriginDocumentAndSimamNumber(String originDocument, String simamNumber);
+	public DeliverNote findBySimamNumberAndDeliveryDate(String simamNumber, Date deliveryDate);
 	
-	public DeliverNoteItem findDeliverNoteItemByOriginDocumentAndSimamNumberAndDrugPackage(final String originDocument,
-	        final String simamNumber, final String drugFnmCode, final Double totalQuantityPerPackage);
+	public DeliverNoteItem findDeliverNoteItemByTokenNumber(String tokenNumber);
+	
+	public DeliverNoteItem findDeliverNoteItemByLotAndTokenNumber(String lotNumber, String tokenNumber);
+	
+	public DeliverNoteItem findDeliverNoteItemByDrugAndLotNumber(Drug drug, String lotNumber);
+	
 }

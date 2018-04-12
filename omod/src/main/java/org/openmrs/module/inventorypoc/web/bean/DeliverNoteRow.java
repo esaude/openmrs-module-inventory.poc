@@ -10,20 +10,16 @@ public class DeliverNoteRow implements Serializable {
 	
 	private final String healthFacilityName;
 	
-	private final String deliveredDate;
+	private final String deliveryDate;
 	
-	private final String originDocument;
-	
-	private final String simamDocument;
+	private final String simamNumber;
 	
 	private final List<DeliverNoteItemRow> items;
 	
-	public DeliverNoteRow(final String healthFacilityName, final String deliveredDate, final String originalDocument,
-	    final String simamDocument) {
+	public DeliverNoteRow(final String healthFacilityName, final String deliveryDate, final String simamNumber) {
 		this.healthFacilityName = healthFacilityName;
-		this.deliveredDate = deliveredDate;
-		this.originDocument = originalDocument;
-		this.simamDocument = simamDocument;
+		this.deliveryDate = deliveryDate;
+		this.simamNumber = simamNumber;
 		this.items = new ArrayList<>();
 	}
 	
@@ -31,16 +27,12 @@ public class DeliverNoteRow implements Serializable {
 		return this.healthFacilityName;
 	}
 	
-	public String getDeliveredDate() {
-		return this.deliveredDate;
+	public String getDeliveryDate() {
+		return this.deliveryDate;
 	}
 	
-	public String getOriginDocument() {
-		return this.originDocument;
-	}
-	
-	public String getSimamDocument() {
-		return this.simamDocument;
+	public String getSimamNumber() {
+		return this.simamNumber;
 	}
 	
 	public void addDeliverNoteItemRow(final DeliverNoteItemRow item) {

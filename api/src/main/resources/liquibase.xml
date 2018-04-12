@@ -71,13 +71,9 @@
 			<column name="location_id" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="recipt_date" type="datetime">
-				<constraints nullable="false" />
-			</column>
 			<column name="expire_date" type="datetime">
 				<constraints nullable="false" />
 			</column>
-			
 			<column name="package_quantity" type="int">
 				<constraints nullable="false" />
 			</column>
@@ -184,13 +180,10 @@
 			<column name="location_id" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="origin_document_code" type="varchar(50)">
-				<constraints nullable="false"  />
-			</column>
-			<column name="simam_number" type="varchar(50)">
+			<column name="delivery_date" type="datetime">
 				<constraints nullable="false" />
 			</column>
-			<column name="recipt_date" type="datetime">
+			<column name="simam_number" type="varchar(50)">
 				<constraints nullable="false" />
 			</column>
 			<column name="uuid" type="char(38)">
@@ -215,8 +208,7 @@
 		<addForeignKeyConstraint constraintName="pocinv_dn_creator_fk" baseTableName="pocinv_deliver_note" baseColumnNames="creator" referencedTableName="users" referencedColumnNames="user_id" />
 		<addForeignKeyConstraint constraintName="pocinv_dn_changed_by_fk" baseTableName="pocinv_deliver_note" baseColumnNames="changed_by" referencedTableName="users" referencedColumnNames="user_id" />
 		<addForeignKeyConstraint constraintName="pocinv_dn_retired_by_fk" baseTableName="pocinv_deliver_note" baseColumnNames="retired_by" referencedTableName="users" referencedColumnNames="user_id" />
-		<addUniqueConstraint tableName="pocinv_deliver_note"
-			columnNames="origin_document_code, simam_number" constraintName="pocinv_deliver_note_unique_row" />
+		
 	</changeSet>
 	<changeSet id="poc.inventory-api-v1.0.0-5" author="Guimino">
 		<preConditions onFail="MARK_RAN">
@@ -249,17 +241,17 @@
 			<column name="unit_price" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="expire_date" type="datetime">
-				<constraints nullable="false" />
-			</column>
 			<column name="batch_id" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="origin_document_code" type="varchar(50)">
+			<column name="expire_date" type="datetime">
 				<constraints nullable="false" />
 			</column>
-			<column name="simam_number" type="varchar(50)">
+			<column name="lot_number" type="char(38)">
 				<constraints nullable="false" />
+			</column>
+			<column name="token_number" type="char(38)">
+				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="uuid" type="char(38)">
 				<constraints nullable="false" unique="true" />
@@ -285,9 +277,8 @@
 		<addForeignKeyConstraint constraintName="pocinv_dni_creator_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="creator" referencedTableName="users" referencedColumnNames="user_id" />
 		<addForeignKeyConstraint constraintName="pocinv_dni_changed_by_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="changed_by" referencedTableName="users" referencedColumnNames="user_id" />
 		<addForeignKeyConstraint constraintName="pocinv_dni_retired_by_fk" baseTableName="pocinv_deliver_note_item" baseColumnNames="retired_by" referencedTableName="users" referencedColumnNames="user_id" />
-		<addUniqueConstraint tableName="pocinv_deliver_note_item"
-			columnNames="origin_document_code, simam_number, drug_package_id" constraintName="pocinv_deliver_note_item_unique_row" />
-	
+	<addUniqueConstraint tableName="pocinv_deliver_note_item"
+			columnNames="lot_number, token_number, drug_package_id" constraintName="pocinv_deliver_note_unique_item" />
 	</changeSet>
 	<changeSet id="poc.inventory-api-v1.0.0-6" author="Guimino">
 		<preConditions onFail="MARK_RAN">

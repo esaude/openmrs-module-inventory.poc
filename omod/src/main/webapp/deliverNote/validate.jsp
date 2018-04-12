@@ -36,20 +36,14 @@
 				<tr>
 					<th colspan="1"><spring:message
 							code="inventorypoc.deliveryDate" /></th>
-					<td colspan="7">${deliverNote.deliveredDate}<springform:errors
-							path="deliveredDate" cssClass="error" />
-					</td>
-				</tr>
-				<tr>
-					<th><spring:message code="inventorypoc.originDocument" /></th>
-					<td colspan="7">${deliverNote.originDocument}<springform:errors
-							path="originDocument" cssClass="error" />
+					<td colspan="7">${deliverNote.deliveryDate}<springform:errors
+							path="deliveryDate" cssClass="error" />
 					</td>
 				</tr>
 				<tr>
 					<th><spring:message code="inventorypoc.simamCode" /></th>
-					<td colspan="7">${deliverNote.simamDocument}<springform:errors
-							path="simamDocument" cssClass="error" />
+					<td colspan="7">${deliverNote.simamNumber}<springform:errors
+							path="simamNumber" cssClass="error" />
 					</td>
 				</tr>
 				<tr>
@@ -63,7 +57,9 @@
 					<th><spring:message code="inventorypoc.authorizedQuantity" /></th>
 					<th><spring:message code="inventorypoc.dispensedQuantity" /></th>
 					<th><spring:message code="inventorypoc.unitPrice" /></th>
+					<th><spring:message code="inventorypoc.lot.number" /></th>
 					<th><spring:message code="inventorypoc.validity" /></th>
+					<th><spring:message code="inventorypoc.token.number" /></th>
 				</tr>
 			</thead>
 
@@ -116,10 +112,24 @@
 									cssClass="error" />
 							</div>
 						</td>
-						<td class="info-expirationDate">${item.expirationDate}
+						<td class="info-lotNumber">${item.lotNumber}
 							<div>
 								<springform:errors
-									path="items[${index.count - 1}].expirationDate"
+									path="items[${index.count - 1}].lotNumber"
+									cssClass="error" />
+							</div>
+						</td>
+						<td class="info-expireDate">${item.expireDate}
+							<div>
+							<springform:errors
+								path="items[${index.count - 1}].expireDate"
+								cssClass="error" />
+							</div>
+						</td>
+						<td class="info-tokenNumber">${item.tokenNumber}
+							<div>
+								<springform:errors
+									path="items[${index.count - 1}].tokenNumber"
 									cssClass="error" />
 							</div>
 						</td>

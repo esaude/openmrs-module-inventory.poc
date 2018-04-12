@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.inventorypoc.delivernote.dao;
 
+import java.util.Date;
+
 import org.hibernate.SessionFactory;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNote;
 
@@ -22,6 +24,7 @@ public interface DeliverNoteDAO {
 	
 	public DeliverNote save(DeliverNote deliverNote);
 	
-	public DeliverNote findByOriginDocumentAndSimamNumber(String originDocument, String SIMAMDocument);
+	public DeliverNote findBySimamNumberAndDeliveryDate(final String simamNumber, final Date deliveryDate,
+	        boolean retired);
 	
 }

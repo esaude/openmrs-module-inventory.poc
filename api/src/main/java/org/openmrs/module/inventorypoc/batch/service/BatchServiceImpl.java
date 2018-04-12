@@ -28,6 +28,7 @@ import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.batch.model.BatchEntry;
 import org.openmrs.module.inventorypoc.batch.model.BatchEntry.BatchOperationType;
 import org.openmrs.module.inventorypoc.common.util.MappedEncounterTypes;
+import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -129,5 +130,22 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 		this.batchDAO.save(batch);
 		
 		return batch;
+	}
+	
+	@Override
+	public Batch adjustBatchWithDeliverNoteItem(final Batch batch, final DeliverNoteItem deliverNoteItem) {
+		
+		final Double newQuantity = deliverNoteItem.getQuantity() * deliverNoteItem.getDrugPackage().getTotalQuantity();
+		
+		batch.setPackageQuantity(batch.getPackageQuantity() + deliverNoteItem.getQuantity());
+		batch.setPackageQuantityUnits(batch.getPackageQuantityUnits() + newQuantity);
+		batch.setRemainPackageQuantityUnits(batch.getRemainPackageQuantityUnits() + newQuantity);
+		
+		this.batchDAO.save(batch);
+		final BatchEntry batchEntry = new BatchEntry(batch, BatchOperationType.RECEIPT, newQuantity);
+		this.batchEntryDAO.save(batchEntry);
+		
+		return batch;
+		
 	}
 }

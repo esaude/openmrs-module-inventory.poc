@@ -28,15 +28,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.module.inventorypoc.common.model.BaseOpenmrsMetadataWrapper;
 
 @Entity
-@Table(name = "pocinv_deliver_note", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "origin_document_code", "simam_number" }) })
+@Table(name = "pocinv_deliver_note")
 public class DeliverNote extends BaseOpenmrsMetadataWrapper {
 	
 	/**
@@ -49,14 +46,11 @@ public class DeliverNote extends BaseOpenmrsMetadataWrapper {
 	@Column(name = "deliver_note_id")
 	private Integer deliverNoteId;
 	
-	@Column(name = "origin_document_code")
-	private String originDocumentCode;
-	
 	@Column(name = "simam_number")
 	private String simamNumber;
 	
-	@Column(name = "recipt_date")
-	private Date reciptDate;
+	@Column(name = "delivery_date")
+	private Date deliveryDate;
 	
 	@ManyToOne
 	@JoinColumn(name = "location_id")
@@ -90,30 +84,6 @@ public class DeliverNote extends BaseOpenmrsMetadataWrapper {
 		this.deliverNoteId = deliverNoteId;
 	}
 	
-	public String getOriginDocumentCode() {
-		return this.originDocumentCode;
-	}
-	
-	public void setOriginDocumentCode(final String origenDocumentCode) {
-		this.originDocumentCode = StringUtils.upperCase(origenDocumentCode);
-	}
-	
-	public String getSimamNumber() {
-		return this.simamNumber;
-	}
-	
-	public void setSimamNumber(final String simamNumber) {
-		this.simamNumber = StringUtils.upperCase(simamNumber);
-	}
-	
-	public Date getReciptDate() {
-		return this.reciptDate;
-	}
-	
-	public void setReciptDate(final Date reciptDate) {
-		this.reciptDate = reciptDate;
-	}
-	
 	public List<DeliverNoteItem> getDeliverNoteItems() {
 		return this.deliverNoteItems;
 	}
@@ -121,6 +91,22 @@ public class DeliverNote extends BaseOpenmrsMetadataWrapper {
 	public void AddDeliverNoteItem(final DeliverNoteItem deliverNoteItem) {
 		
 		this.deliverNoteItems.add(deliverNoteItem);
+	}
+	
+	public String getSimamNumber() {
+		return this.simamNumber;
+	}
+	
+	public void setSimamNumber(final String simamNumber) {
+		this.simamNumber = simamNumber;
+	}
+	
+	public Date getDeliveryDate() {
+		return this.deliveryDate;
+	}
+	
+	public void setDeliveryDate(final Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
 	}
 	
 	public Location getLocation() {
@@ -136,7 +122,6 @@ public class DeliverNote extends BaseOpenmrsMetadataWrapper {
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result) + ((this.location == null) ? 0 : this.location.hashCode());
-		result = (prime * result) + ((this.originDocumentCode == null) ? 0 : this.originDocumentCode.hashCode());
 		result = (prime * result) + ((this.simamNumber == null) ? 0 : this.simamNumber.hashCode());
 		return result;
 	}
@@ -158,13 +143,6 @@ public class DeliverNote extends BaseOpenmrsMetadataWrapper {
 				return false;
 			}
 		} else if (!this.location.equals(other.location)) {
-			return false;
-		}
-		if (this.originDocumentCode == null) {
-			if (other.originDocumentCode != null) {
-				return false;
-			}
-		} else if (!this.originDocumentCode.equals(other.originDocumentCode)) {
 			return false;
 		}
 		if (this.simamNumber == null) {

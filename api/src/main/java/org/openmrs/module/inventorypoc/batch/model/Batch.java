@@ -44,9 +44,6 @@ public class Batch extends BaseOpenmrsMetadataWrapper implements Comparable<Batc
 	@JoinColumn(name = "drug_package_id")
 	private DrugPackage drugPackage;
 	
-	@Column(name = "recipt_date")
-	private Date reciptDate;
-	
 	@Column(name = "expire_date")
 	private Date expireDate;
 	
@@ -92,14 +89,6 @@ public class Batch extends BaseOpenmrsMetadataWrapper implements Comparable<Batc
 	
 	public void setDrugPackage(final DrugPackage drugPackage) {
 		this.drugPackage = drugPackage;
-	}
-	
-	public Date getReciptDate() {
-		return this.reciptDate;
-	}
-	
-	public void setReciptDate(final Date reciptDate) {
-		this.reciptDate = reciptDate;
 	}
 	
 	public Date getExpireDate() {

@@ -24,17 +24,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.common.model.BaseOpenmrsMetadataWrapper;
 import org.openmrs.module.inventorypoc.drugpackage.model.DrugPackage;
 
 @Entity
-@Table(name = "pocinv_deliver_note_item", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "origin_document_code", "simam_number", "drug_package_id" }) })
+@Table(name = "pocinv_deliver_note_item")
 public class DeliverNoteItem extends BaseOpenmrsMetadataWrapper {
 	
 	private static final long serialVersionUID = -5334607210286652512L;
@@ -61,9 +57,6 @@ public class DeliverNoteItem extends BaseOpenmrsMetadataWrapper {
 	@Column(name = "unit_price")
 	private Double unitPrice;
 	
-	@Column(name = "expire_date")
-	private Date expireDate;
-	
 	@OneToOne
 	@JoinColumn(name = "batch_id")
 	private Batch batch;
@@ -71,18 +64,14 @@ public class DeliverNoteItem extends BaseOpenmrsMetadataWrapper {
 	@Column(name = "authorized_quantity")
 	private Double authorizedQuantity;
 	
-	@Column(name = "origin_document_code")
-	private String originDocumentCode;
+	@Column(name = "lot_number")
+	private String lotNumber;
 	
-	@Column(name = "simam_number")
-	private String simamNumber;
+	@Column(name = "expire_date")
+	private Date expireDate;
 	
-	@Transient
-	private Action action;
-	
-	public enum Action {
-		INSERT, UPDATE
-	}
+	@Column(name = "token_number", unique = true)
+	private String tokenNumber;
 	
 	public DeliverNoteItem() {
 	}
@@ -133,14 +122,6 @@ public class DeliverNoteItem extends BaseOpenmrsMetadataWrapper {
 		this.unitPrice = unitPrice;
 	}
 	
-	public Date getExpireDate() {
-		return this.expireDate;
-	}
-	
-	public void setExpireDate(final Date expireDate) {
-		this.expireDate = expireDate;
-	}
-	
 	public Batch getBatch() {
 		return this.batch;
 	}
@@ -165,28 +146,28 @@ public class DeliverNoteItem extends BaseOpenmrsMetadataWrapper {
 		this.authorizedQuantity = authorizedQuantity;
 	}
 	
-	public String getOriginDocumentCode() {
-		return this.originDocumentCode;
+	public String getTokenNumber() {
+		return this.tokenNumber;
 	}
 	
-	public void setOriginDocumentCode(final String origenDocumentCode) {
-		this.originDocumentCode = StringUtils.upperCase(origenDocumentCode);
+	public void setTokenNumber(final String tokenNumber) {
+		this.tokenNumber = tokenNumber;
 	}
 	
-	public String getSimamNumber() {
-		return this.simamNumber;
+	public String getLotNumber() {
+		return this.lotNumber;
 	}
 	
-	public void setSimamNumber(final String simamNumber) {
-		this.simamNumber = StringUtils.upperCase(simamNumber);
+	public void setLotNumber(final String lotNumber) {
+		this.lotNumber = lotNumber;
 	}
 	
-	public Action getAction() {
-		return this.action;
+	public Date getExpireDate() {
+		return this.expireDate;
 	}
 	
-	public void setAction(final Action action) {
-		this.action = action;
+	public void setExpireDate(final Date expireDate) {
+		this.expireDate = expireDate;
 	}
 	
 	@Override

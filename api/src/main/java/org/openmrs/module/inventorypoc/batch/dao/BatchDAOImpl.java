@@ -54,7 +54,6 @@ public class BatchDAOImpl implements BatchDAO {
 		searchCriteria.add(Restrictions.gt("batch.remainPackageQuantityUnits", Double.valueOf(0)));
 		searchCriteria.add(Restrictions.gt("batch.expireDate", DateUtils.highDateTime(date)));
 		searchCriteria.addOrder(Order.asc("batch.expireDate"));
-		searchCriteria.addOrder(Order.desc("batch.reciptDate"));
 		
 		return searchCriteria.list();
 	}
@@ -90,7 +89,6 @@ public class BatchDAOImpl implements BatchDAO {
 		searchCriteria.add(Restrictions.gt("batch.remainPackageQuantityUnits", Double.valueOf(0)));
 		searchCriteria.add(Restrictions.gt("batch.expireDate", DateUtils.highDateTime(currentDate)));
 		searchCriteria.addOrder(Order.asc("batch.expireDate"));
-		searchCriteria.addOrder(Order.desc("batch.reciptDate"));
 		
 		return searchCriteria.list();
 	}

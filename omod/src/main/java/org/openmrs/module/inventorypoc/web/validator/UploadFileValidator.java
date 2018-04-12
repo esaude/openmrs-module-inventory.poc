@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.inventorypoc.web.validator;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.inventorypoc.web.bean.UploadFile;
@@ -56,23 +53,23 @@ public class UploadFileValidator implements Validator {
 	
 	private void checkFileExtension(final MultipartFile multipartFile, final Errors errors) {
 		
-		final File file = new File(multipartFile.getName());
-		try {
-			multipartFile.transferTo(file);
-			
-			final String fileExtension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-			
-			if (!UploadFileValidator.XLS_FILE_EXTENSION.equals(StringUtils.lowerCase(fileExtension))) {
-				errors.rejectValue("file", "inventorypoc.error.wrong.file.extension");
-				return;
-			}
-			
-			multipartFile.transferTo(file);
-			
+		// final File file = new File(multipartFile.getName());
+		// try {
+		// multipartFile.transferTo(file);
+		
+		final String fileExtension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+		
+		if (!UploadFileValidator.XLS_FILE_EXTENSION.equals(StringUtils.lowerCase(fileExtension))) {
+			errors.rejectValue("file", "inventorypoc.error.wrong.file.extension");
+			return;
 		}
-		catch (IllegalStateException | IOException e) {
-			
-			errors.rejectValue("file", "inventorypoc.error.wrong.file.general", new String[] { e.getMessage() }, null);
-		}
+		
+		// multipartFile.transferTo(file);
+		//
+		// } catch (final IllegalStateException) {
+		//
+		// errors.rejectValue("file", "inventorypoc.error.wrong.file.general",
+		// new String[] { e.getMessage() }, null);
+		// }
 	}
 }

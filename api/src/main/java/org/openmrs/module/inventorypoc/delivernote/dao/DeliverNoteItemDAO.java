@@ -14,8 +14,8 @@
 package org.openmrs.module.inventorypoc.delivernote.dao;
 
 import org.hibernate.SessionFactory;
+import org.openmrs.Drug;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
-import org.openmrs.module.inventorypoc.drugpackage.model.DrugPackage;
 
 public interface DeliverNoteItemDAO {
 	
@@ -23,7 +23,9 @@ public interface DeliverNoteItemDAO {
 	
 	public DeliverNoteItem save(DeliverNoteItem deliverNoteItem);
 	
-	public DeliverNoteItem findByOriginDocumentAndSimamNumberAndDrugPackage(final String originDocument,
-	        final String simamNumber, final DrugPackage drugPackage);
+	DeliverNoteItem findByTokenNumber(final String tokenNumber, boolean retired);
 	
+	DeliverNoteItem findByLotAndTokenNumber(final String lotNumber, String tokenNumber, boolean retired);
+	
+	DeliverNoteItem findByDrugAndLotNumber(Drug drug, String loteNumber, final boolean retired);
 }

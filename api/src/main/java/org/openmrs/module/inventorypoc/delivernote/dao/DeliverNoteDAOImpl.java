@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.inventorypoc.delivernote.dao;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.module.inventorypoc.common.util.DateUtils;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNote;
 
 public class DeliverNoteDAOImpl implements DeliverNoteDAO {
@@ -38,12 +41,15 @@ public class DeliverNoteDAOImpl implements DeliverNoteDAO {
 	}
 	
 	@Override
-	public DeliverNote findByOriginDocumentAndSimamNumber(final String originDocument, final String simamNumber) {
+	public DeliverNote findBySimamNumberAndDeliveryDate(final String simamNumber, final Date deliveryDate,
+	        final boolean retired) {
 		
 		final Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(DeliverNote.class,
 		    "deliverNote");
-		criteria.add(Restrictions.eq("deliverNote.originDocumentCode", originDocument));
 		criteria.add(Restrictions.eq("deliverNote.simamNumber", simamNumber));
+		criteria.add(Restrictions.ge("deliverNote.deliveryDate", DateUtils.lowDateTime(deliveryDate)));
+		criteria.add(Restrictions.le("deliverNote.deliveryDate", DateUtils.highDateTime(deliveryDate)));
+		criteria.add(Restrictions.eq("deliverNote.retired", retired));
 		
 		return (DeliverNote) criteria.uniqueResult();
 	}

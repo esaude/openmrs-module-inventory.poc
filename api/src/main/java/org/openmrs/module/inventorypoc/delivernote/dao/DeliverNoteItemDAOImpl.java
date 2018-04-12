@@ -13,13 +13,15 @@
  */
 package org.openmrs.module.inventorypoc.delivernote.dao;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Drug;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
-import org.openmrs.module.inventorypoc.drugpackage.model.DrugPackage;
 
 public class DeliverNoteItemDAOImpl implements DeliverNoteItemDAO {
 	
@@ -39,15 +41,42 @@ public class DeliverNoteItemDAOImpl implements DeliverNoteItemDAO {
 	}
 	
 	@Override
-	public DeliverNoteItem findByOriginDocumentAndSimamNumberAndDrugPackage(final String originDocument,
-	        final String simamNumber, final DrugPackage drugPackage) {
+	public DeliverNoteItem findByTokenNumber(final String tokenNumber, final boolean retired) {
 		
 		final Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(DeliverNoteItem.class, "item");
-		
-		criteria.add(Restrictions.eq("item.originDocumentCode", originDocument));
-		criteria.add(Restrictions.eq("item.simamNumber", simamNumber));
-		criteria.add(Restrictions.eq("item.drugPackage", drugPackage));
+		criteria.add(Restrictions.eq("item.tokenNumber", tokenNumber));
+		criteria.add(Restrictions.eq("item.retired", retired));
 		
 		return (DeliverNoteItem) criteria.uniqueResult();
+	}
+	
+	@Override
+	public DeliverNoteItem findByLotAndTokenNumber(final String lotNumber, final String tokenNumber,
+	        final boolean retired) {
+		
+		final Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(DeliverNoteItem.class, "item");
+		criteria.add(Restrictions.eq("item.lotNumber", lotNumber));
+		criteria.add(Restrictions.eq("item.tokenNumber", tokenNumber));
+		criteria.add(Restrictions.eq("item.retired", retired));
+		
+		return (DeliverNoteItem) criteria.uniqueResult();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public DeliverNoteItem findByDrugAndLotNumber(final Drug drug, final String loteNumber, final boolean retired) {
+		
+		final Criteria searchCriteria = this.sessionFactory.getCurrentSession().createCriteria(DeliverNoteItem.class,
+		    "item");
+		searchCriteria.createAlias("item.drugPackage", "package");
+		searchCriteria.add(Restrictions.eq("package.drug", drug));
+		searchCriteria.add(Restrictions.eq("item.lotNumber", loteNumber));
+		searchCriteria.add(Restrictions.eq("item.retired", retired));
+		final List<DeliverNoteItem> list = searchCriteria.list();
+		
+		if (!list.isEmpty()) {
+			return list.iterator().next();
+		}
+		return null;
 	}
 }

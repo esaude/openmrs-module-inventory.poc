@@ -83,8 +83,8 @@ public class ImportDeliverNoteController {
 		
 		final File file = new File(uploadFile.getFile().getName());
 		uploadFile.getFile().transferTo(file);
-		final DeliverNoteRow deliverNote = this.xlsToPojoObjectTransformer.toDeliverNote(file);
 		
+		final DeliverNoteRow deliverNote = this.xlsToPojoObjectTransformer.toDeliverNote(file);
 		model.addAttribute(ImportDeliverNoteController.DELIVER_NOTE, deliverNote);
 		
 		return new ModelAndView(WebUtils.redirect(ImportDeliverNoteController.VALIDATE_FORM_PATH));
@@ -145,32 +145,32 @@ public class ImportDeliverNoteController {
 	
 	private DeliverNote generateDeliverNote(final DeliverNoteRow deliverNoteRow) throws ParseException {
 		
-		final DeliverNote toImport = new DeliverNote();
+		final DeliverNote deliverNoteToImport = new DeliverNote();
 		
 		final SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy");
-		final Date deliverDate = sfd.parse(deliverNoteRow.getDeliveredDate());
-		toImport.setReciptDate(deliverDate);
-		toImport.setOriginDocumentCode(deliverNoteRow.getOriginDocument());
-		toImport.setSimamNumber(deliverNoteRow.getSimamDocument());
-		toImport.setLocation(Context.getLocationService().getDefaultLocation());
+		final Date deliverDate = sfd.parse(deliverNoteRow.getDeliveryDate());
+		
+		deliverNoteToImport.setDeliveryDate(deliverDate);
+		deliverNoteToImport.setSimamNumber(deliverNoteRow.getSimamNumber());
+		deliverNoteToImport.setLocation(Context.getLocationService().getDefaultLocation());
 		
 		for (final DeliverNoteItemRow itemRow : deliverNoteRow.getItems()) {
 			
 			final DeliverNoteItem noteItem = new DeliverNoteItem();
-			noteItem.setDeliverNote(toImport);
+			noteItem.setDeliverNote(deliverNoteToImport);
 			
 			noteItem.setRequestedQuantity(Double.valueOf(itemRow.getRequestedQuantity()));
 			noteItem.setAuthorizedQuantity(Double.valueOf(itemRow.getAuthorizedQuantity()));
 			noteItem.setQuantity(Double.valueOf(itemRow.getDeliveredQuantity()));
 			noteItem.setUnitPrice(Double.valueOf(itemRow.getUnitPrice()));
-			noteItem.setSimamNumber(toImport.getSimamNumber());
-			noteItem.setOriginDocumentCode(toImport.getOriginDocumentCode());
-			noteItem.setExpireDate(sfd.parse(itemRow.getExpirationDate()));
+			noteItem.setLotNumber(itemRow.getLotNumber());
+			noteItem.setTokenNumber(itemRow.getTokenNumber());
+			noteItem.setExpireDate(sfd.parse(itemRow.getExpireDate()));
 			noteItem.setDrugPackage(
 			        new DrugPackage(itemRow.getFnmCode(), Double.valueOf(itemRow.getTotalPackageUnits())));
-			toImport.AddDeliverNoteItem(noteItem);
+			deliverNoteToImport.AddDeliverNoteItem(noteItem);
 		}
-		return toImport;
+		return deliverNoteToImport;
 	}
 	
 	private void setDrugNameSystemDesignation(final DeliverNoteRow deliverNoteRow) {

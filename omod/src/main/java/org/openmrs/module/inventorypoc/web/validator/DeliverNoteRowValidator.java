@@ -2,6 +2,7 @@ package org.openmrs.module.inventorypoc.web.validator;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.inventorypoc.web.bean.DeliverNoteItemRow;
@@ -20,6 +21,8 @@ public class DeliverNoteRowValidator implements Validator {
 	
 	@Autowired
 	private DeliverNoteItemRowValidator deliverNoteItemRowValidator;
+	
+	private static final String DATE_REGEX_PATTERN = "([0-3]{1}[0-9]{1})/([0-1]{1}[0-9]{1})/([1-3]{1}[0-9]{3})";
 	
 	/**
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
@@ -48,16 +51,17 @@ public class DeliverNoteRowValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthFacilityName",
 		    "inventorypoc.error.deliverNote.healthFacilityName.isEmpty");
 		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "deliveredDate", "inventorypoc.error.deliveredDate.isEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "deliveryDate", "inventorypoc.error.deliveredDate.isEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "simamNumber", "inventorypoc.error.simamDocument.isEmpty");
 		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "originDocument",
-		    "inventorypoc.error.originDocument.isEmpty");
-		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "simamDocument", "inventorypoc.error.simamDocument.isEmpty");
-		
-		if (StringUtils.isNotEmpty(deliverNoteRow.getDeliveredDate())) {
-			this.validateDeliveredDateFormat(deliverNoteRow.getDeliveredDate(), errors);
+		if (StringUtils.isNotEmpty(deliverNoteRow.getDeliveryDate())) {
+			DeliverNoteRowValidator.validateDateFormat("deliveryDate", deliverNoteRow.getDeliveryDate(), errors);
 		}
+		
+		try {
+			this.validateDatesComparison(deliverNoteRow, errors);
+		}
+		catch (final ParseException e) {}
 		
 		int idx = 0;
 		for (final DeliverNoteItemRow item : deliverNoteRow.getItems()) {
@@ -68,15 +72,43 @@ public class DeliverNoteRowValidator implements Validator {
 		}
 	}
 	
-	private void validateDeliveredDateFormat(final String dateText, final Errors errors) {
+	public static void validateDateFormat(final String propertyName, final String dateText, final Errors errors) {
 		
-		final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		if (!DeliverNoteRowValidator.isDateValid(dateText)) {
+			errors.rejectValue(propertyName, "inventorypoc.error.date.invalidDateFormat");
+		}
+	}
+	
+	private void validateDatesComparison(final DeliverNoteRow deliverNote, final Errors errors) throws ParseException {
 		
+		if (DeliverNoteRowValidator.isDateValid(deliverNote.getDeliveryDate())) {
+			
+			final Date deliveredDate = DeliverNoteRowValidator.getDateFromString(deliverNote.getDeliveryDate());
+			
+			if (deliveredDate.after(new Date())) {
+				
+				errors.rejectValue("deliveryDate", "inventorypoc.error.deliveredDate.isGreaterThanCurrentDate");
+			}
+		}
+	}
+	
+	public static boolean isDateValid(final String dateText) {
 		try {
-			sdf.parse(dateText);
+			DeliverNoteRowValidator.getDateFromString(dateText);
+			return true && DeliverNoteRowValidator.isDatePatternValid(dateText);
 		}
 		catch (final ParseException e) {
-			errors.rejectValue("deliveredDate", "inventorypoc.error.date.invalidDateFormat");
+			return false;
 		}
+	}
+	
+	public static Date getDateFromString(final String dateText) throws ParseException {
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		return sdf.parse(dateText);
+	}
+	
+	private static boolean isDatePatternValid(final String dateStr) {
+		
+		return dateStr != null ? dateStr.matches(DeliverNoteRowValidator.DATE_REGEX_PATTERN) : false;
 	}
 }

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.inventorypoc.delivernote.service;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.openmrs.Drug;
@@ -26,8 +27,10 @@ import org.openmrs.module.inventorypoc.delivernote.dao.DeliverNoteDAO;
 import org.openmrs.module.inventorypoc.delivernote.dao.DeliverNoteItemDAO;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNote;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
+import org.openmrs.module.inventorypoc.delivernote.validation.DeliverNoteValidator;
 import org.openmrs.module.inventorypoc.drugpackage.model.DrugPackage;
 import org.openmrs.module.inventorypoc.drugpackage.service.DrugPackageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -42,6 +45,9 @@ public class DeliverNoteServiceImpl extends BaseOpenmrsService implements Delive
 	private DrugPackageService drugPackageService;
 	
 	private LocationService locationService;
+	
+	@Autowired
+	private DeliverNoteValidator deliverNoteValidator;
 	
 	@Override
 	public void setDeliverNoteDAO(final DeliverNoteDAO deliverNoteDAO) {
@@ -71,9 +77,11 @@ public class DeliverNoteServiceImpl extends BaseOpenmrsService implements Delive
 	@Override
 	public DeliverNote createDeliverNote(final DeliverNote deliverNote) {
 		
+		this.deliverNoteValidator.validate(deliverNote);
+		
 		final Location location = this.locationService.getLocation(deliverNote.getLocation().getLocationId());
 		DeliverNote foundDeliverNote = this.deliverNoteDAO
-		        .findByOriginDocumentAndSimamNumber(deliverNote.getOriginDocumentCode(), deliverNote.getSimamNumber());
+		        .findBySimamNumberAndDeliveryDate(deliverNote.getSimamNumber(), deliverNote.getDeliveryDate(), false);
 		
 		if (foundDeliverNote == null) {
 			deliverNote.setLocation(location);
@@ -82,37 +90,51 @@ public class DeliverNoteServiceImpl extends BaseOpenmrsService implements Delive
 		}
 		
 		for (final DeliverNoteItem noteItem : deliverNote.getDeliverNoteItems()) {
+			
 			final DrugPackage drugPackage = this.drugPackageService
 			        .fingDrugPackageById(noteItem.getDrugPackage().getId());
 			
-			final Batch batch = new Batch();
-			batch.setReciptDate(foundDeliverNote.getReciptDate());
-			batch.setExpireDate(noteItem.getExpireDate());
-			batch.setDrugPackage(noteItem.getDrugPackage());
-			batch.setPackageQuantity(noteItem.getQuantity());
-			batch.setPackageQuantityUnits(noteItem.getQuantity() * drugPackage.getTotalQuantity());
-			batch.setLocation(location);
-			batch.setRemainPackageQuantityUnits(batch.getPackageQuantityUnits());
-			batch.setUnBalancedUnitsQuantity(0d);
-			batch.setVersion(1d);
+			final Batch batch = this.generateBatch(noteItem, drugPackage, location);
 			
 			final DeliverNoteItem deliverNoteItem = new DeliverNoteItem();
 			deliverNoteItem.setBatch(batch);
 			deliverNoteItem.setDeliverNote(foundDeliverNote);
-			deliverNoteItem.setExpireDate(noteItem.getExpireDate());
 			deliverNoteItem.setQuantity(noteItem.getQuantity());
 			deliverNoteItem.setDrugPackage(drugPackage);
 			deliverNoteItem.setUnitPrice(noteItem.getUnitPrice());
 			deliverNoteItem.setUuid(UUID.randomUUID().toString());
 			deliverNoteItem.setAuthorizedQuantity(noteItem.getAuthorizedQuantity());
-			deliverNoteItem.setSimamNumber(noteItem.getSimamNumber());
-			deliverNoteItem.setOriginDocumentCode(noteItem.getOriginDocumentCode());
 			deliverNoteItem.setRequestedQuantity(noteItem.getRequestedQuantity());
+			deliverNoteItem.setLotNumber(noteItem.getLotNumber());
+			deliverNoteItem.setTokenNumber(noteItem.getTokenNumber());
+			deliverNoteItem.setExpireDate(noteItem.getExpireDate());
 			
-			this.batchService.createBatch(batch, BatchOperationType.RECEIPT);
 			this.deliverNoteItemDAO.save(deliverNoteItem);
 		}
 		return foundDeliverNote;
+	}
+	
+	private Batch generateBatch(final DeliverNoteItem noteItem, final DrugPackage drugPackage,
+	        final Location location) {
+		
+		final DeliverNoteItem foundDeliverNoteItem = this.findDeliverNoteItemByDrugAndLotNumber(drugPackage.getDrug(),
+		    noteItem.getLotNumber());
+		
+		if (foundDeliverNoteItem != null) {
+			return this.batchService.adjustBatchWithDeliverNoteItem(foundDeliverNoteItem.getBatch(), noteItem);
+		}
+		
+		final Batch batch = new Batch();
+		batch.setExpireDate(noteItem.getExpireDate());
+		batch.setDrugPackage(noteItem.getDrugPackage());
+		batch.setPackageQuantity(noteItem.getQuantity());
+		batch.setPackageQuantityUnits(noteItem.getQuantity() * drugPackage.getTotalQuantity());
+		batch.setLocation(location);
+		batch.setRemainPackageQuantityUnits(batch.getPackageQuantityUnits());
+		batch.setUnBalancedUnitsQuantity(0d);
+		batch.setVersion(1d);
+		
+		return this.batchService.createBatch(batch, BatchOperationType.RECEIPT);
 	}
 	
 	@Override
@@ -141,20 +163,23 @@ public class DeliverNoteServiceImpl extends BaseOpenmrsService implements Delive
 	}
 	
 	@Override
-	public DeliverNote findDeliverNoteByOriginDocumentAndSimamNumber(final String originDocument,
-	        final String simamNumber) {
-		return this.deliverNoteDAO.findByOriginDocumentAndSimamNumber(originDocument, simamNumber);
+	public DeliverNote findBySimamNumberAndDeliveryDate(final String simamNumber, final Date deliveryDate) {
+		return this.deliverNoteDAO.findBySimamNumberAndDeliveryDate(simamNumber, deliveryDate, false);
 	}
 	
 	@Override
-	public DeliverNoteItem findDeliverNoteItemByOriginDocumentAndSimamNumberAndDrugPackage(final String originDocument,
-	        final String simamNumber, final String drugFnmCode, final Double totalQuantityPerPackage) {
+	public DeliverNoteItem findDeliverNoteItemByTokenNumber(final String tokenNumber) {
 		
-		final Drug drug = this.drugPackageService.findDrugByDrugFNMCode(drugFnmCode);
-		final DrugPackage drugPackage = this.drugPackageService.findDrugPackageByDrugAndTotalQuantity(drug,
-		    totalQuantityPerPackage);
-		
-		return this.deliverNoteItemDAO.findByOriginDocumentAndSimamNumberAndDrugPackage(originDocument, simamNumber,
-		    drugPackage);
+		return this.deliverNoteItemDAO.findByTokenNumber(tokenNumber, false);
+	}
+	
+	@Override
+	public DeliverNoteItem findDeliverNoteItemByLotAndTokenNumber(final String lotNumber, final String tokenNumber) {
+		return this.deliverNoteItemDAO.findByLotAndTokenNumber(lotNumber, tokenNumber, false);
+	}
+	
+	@Override
+	public DeliverNoteItem findDeliverNoteItemByDrugAndLotNumber(final Drug drug, final String lotNumber) {
+		return this.deliverNoteItemDAO.findByDrugAndLotNumber(drug, lotNumber, false);
 	}
 }

@@ -29,7 +29,7 @@ public class XlsToPojoObjectTransformer {
 			
 			final HSSFSheet sheet = workbook.getSheetAt(0);
 			
-			deliverNoteRow = this.generateDeliverNoteItem(sheet);
+			deliverNoteRow = this.generateDeliverNoteRow(sheet);
 			
 			fileInputStream.close();
 			workbook.close();
@@ -37,12 +37,11 @@ public class XlsToPojoObjectTransformer {
 		return deliverNoteRow;
 	}
 	
-	private DeliverNoteRow generateDeliverNoteItem(final HSSFSheet sheet) {
+	private DeliverNoteRow generateDeliverNoteRow(final HSSFSheet sheet) {
 		final DeliverNoteRow deliverNoteRow = new DeliverNoteRow(this.getCellStringValue(sheet.getRow(4), 2),
-		        this.getCellStringValue(sheet.getRow(5), 2), this.getCellStringValue(sheet.getRow(6), 2),
-		        this.getCellStringValue(sheet.getRow(7), 2));
+		        this.getCellStringValue(sheet.getRow(5), 2), this.getCellStringValue(sheet.getRow(6), 2));
 		
-		for (int i = 12; i <= sheet.getLastRowNum(); i++) {
+		for (int i = 10; i <= sheet.getLastRowNum(); i++) {
 			
 			final HSSFRow row = sheet.getRow(i);
 			int rowCount = -1;
@@ -51,8 +50,8 @@ public class XlsToPojoObjectTransformer {
 			        this.getCellStringValue(row, ++rowCount), this.getCellStringValue(row, ++rowCount),
 			        this.getCellStringValue(row, ++rowCount), this.getCellStringValue(row, ++rowCount),
 			        this.getCellStringValue(row, ++rowCount), this.getCellStringValue(row, ++rowCount),
-			        this.getCellStringValue(row, ++rowCount), deliverNoteRow.getOriginDocument(),
-			        deliverNoteRow.getSimamDocument());
+			        this.getCellStringValue(row, ++rowCount), this.getCellStringValue(row, ++rowCount),
+			        this.getCellStringValue(row, ++rowCount));
 			deliverNoteRow.addDeliverNoteItemRow(itemRow);
 		}
 		return deliverNoteRow;
@@ -70,5 +69,12 @@ public class XlsToPojoObjectTransformer {
 	private String normalize(final String toNormalize) {
 		return Normalizer.normalize(toNormalize, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase()
 		        .trim();
+	}
+	
+	public static void main(final String[] args) {
+		
+		final String pattern = "([0-3]{1}[0-9]{1})/([0-1]{1}[0-9]{1})/([1-3]{1}[0-9]{3})";
+		
+		System.out.println("39/11/3016".matches(pattern));
 	}
 }

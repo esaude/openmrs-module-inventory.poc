@@ -22,18 +22,17 @@ public class DeliverNoteItemRow implements Serializable, Comparable<DeliverNoteI
 	
 	private final String unitPrice;
 	
-	private final String expirationDate;
+	private final String lotNumber;
 	
-	private final String originDocument;
+	private final String tokenNumber;
 	
-	private final String simamDocument;
+	private final String expireDate;
 	
 	private String drugNameSytemDesignation;
 	
 	public DeliverNoteItemRow(final String fnmCode, final String designation, final String totalPackageUnits,
 	    final String requestedQuantity, final String authorizedQuantity, final String deliveredQuantity,
-	    final String unitaryPrice, final String expirationDate, final String originDocument,
-	    final String simamDocument) {
+	    final String unitaryPrice, final String lotNumber, final String expireDate, final String tokenNumber) {
 		
 		this.fnmCode = fnmCode;
 		this.designation = designation;
@@ -42,9 +41,9 @@ public class DeliverNoteItemRow implements Serializable, Comparable<DeliverNoteI
 		this.authorizedQuantity = authorizedQuantity;
 		this.deliveredQuantity = deliveredQuantity;
 		this.unitPrice = unitaryPrice;
-		this.expirationDate = expirationDate;
-		this.originDocument = originDocument;
-		this.simamDocument = simamDocument;
+		this.lotNumber = lotNumber;
+		this.expireDate = expireDate;
+		this.tokenNumber = tokenNumber;
 	}
 	
 	public String getFnmCode() {
@@ -75,10 +74,6 @@ public class DeliverNoteItemRow implements Serializable, Comparable<DeliverNoteI
 		return this.unitPrice;
 	}
 	
-	public String getExpirationDate() {
-		return this.expirationDate;
-	}
-	
 	public String getDrugNameSytemDesignation() {
 		return this.drugNameSytemDesignation;
 	}
@@ -87,12 +82,16 @@ public class DeliverNoteItemRow implements Serializable, Comparable<DeliverNoteI
 		this.drugNameSytemDesignation = drugNameSytemDesignation;
 	}
 	
-	public String getOriginDocument() {
-		return this.originDocument;
+	public String getTokenNumber() {
+		return this.tokenNumber;
 	}
 	
-	public String getSimamDocument() {
-		return this.simamDocument;
+	public String getLotNumber() {
+		return this.lotNumber;
+	}
+	
+	public String getExpireDate() {
+		return this.expireDate;
 	}
 	
 	@Override

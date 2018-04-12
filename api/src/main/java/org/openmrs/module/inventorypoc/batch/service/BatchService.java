@@ -24,6 +24,7 @@ import org.openmrs.module.inventorypoc.batch.dao.BatchDAO;
 import org.openmrs.module.inventorypoc.batch.dao.BatchEntryDAO;
 import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.batch.model.BatchEntry.BatchOperationType;
+import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -34,6 +35,8 @@ public interface BatchService extends OpenmrsService {
 	public void setBatchEntryDAO(BatchEntryDAO batchEntryDAO);
 	
 	public Batch createBatch(Batch batch, BatchOperationType batchOperationType);
+	
+	public Batch adjustBatchWithDeliverNoteItem(Batch batch, DeliverNoteItem deliverNoteItem);
 	
 	public Batch adjustBatchCurrentQuantity(Batch batch, Double newRemainPackageQuantityUnits);
 	
