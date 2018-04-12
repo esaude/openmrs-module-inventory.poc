@@ -23,54 +23,53 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 @Resource(name = RestConstants.VERSION_1
-        + "/batch", order = 2, supportedClass = Batch.class, supportedOpenmrsVersions = { "1.8.*", "1.9.*", "1.10.*",
-        "1.11.*", "1.12.*" })
++ "/batch", order = 2, supportedClass = Batch.class, supportedOpenmrsVersions = { "1.8.*", "1.9.*", "1.10.*",
+		"1.11.*", "1.12.*" })
 public class BatchResource extends MetadataDelegatingCrudResource<Batch> {
-	
+
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(final Representation rep) {
-		
+
 		if ((rep instanceof DefaultRepresentation) || (rep instanceof RefRepresentation)
-		        || (rep instanceof FullRepresentation)) {
+				|| (rep instanceof FullRepresentation)) {
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("packageQuantityUnits");
 			description.addProperty("remainPackageQuantityUnits");
 			description.addProperty("unBalancedUnitsQuantity");
-			description.addProperty("reciptDate");
 			description.addProperty("expireDate");
-			
+
 			return description;
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected PageableResult doSearch(final RequestContext context) {
-		
+
 		final Drug drug = Context.getConceptService().getDrugByUuid(context.getParameter("drug"));
 		final Location location = Context.getLocationService().getLocationByUuid(context.getParameter("location"));
 		final List<Batch> batches = Context.getService(BatchService.class)
-		        .findBatchesByDrugAndLocationAndNotExpiredDate(drug, location, new Date());
+				.findBatchesByDrugAndLocationAndNotExpiredDate(drug, location, new Date());
 		return new NeedsPaging(batches, context);
 	}
-	
+
 	@Override
 	public Batch newDelegate() {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	@Override
 	public Batch save(final Batch delegate) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	@Override
 	public Batch getByUniqueId(final String uniqueId) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	@Override
 	public void purge(final Batch delegate, final RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
