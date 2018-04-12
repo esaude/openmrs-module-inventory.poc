@@ -37,7 +37,6 @@ public class BatchResource extends MetadataDelegatingCrudResource<Batch> {
 			description.addProperty("packageQuantityUnits");
 			description.addProperty("remainPackageQuantityUnits");
 			description.addProperty("unBalancedUnitsQuantity");
-			description.addProperty("reciptDate");
 			description.addProperty("expireDate");
 			
 			return description;
