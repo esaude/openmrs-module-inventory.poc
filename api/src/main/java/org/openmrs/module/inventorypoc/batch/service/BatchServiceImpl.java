@@ -20,6 +20,7 @@ import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.inventorypoc.batch.dao.BatchDAO;
@@ -73,7 +74,9 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 		    date, false);
 		
 		if (batches.isEmpty()) {
-			// TODO: should find a way to waste drugs without initial inventory
+			
+			throw new APIException(Context.getMessageSourceService().getMessage("inventorypoc.error.noStockAvailablity",
+			    new String[] { drugOrder.getDrug().getDisplayName() }, Context.getLocale()));
 		} else {
 			this.processForExistingBatches(drugOrder, batches, quantity);
 		}
@@ -97,7 +100,9 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 				wastedQuantity = wastedQuantity - entryQuantity;
 				
 			} else {
-				break;
+				throw new APIException(
+				        Context.getMessageSourceService().getMessage("inventorypoc.error.insuficientStock.availability",
+				            new String[] { drugOrder.getDrug().getDisplayName() }, Context.getLocale()));
 			}
 		}
 	}
