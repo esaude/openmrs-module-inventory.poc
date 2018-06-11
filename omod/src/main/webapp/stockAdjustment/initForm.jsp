@@ -58,6 +58,9 @@ table.upload {
 					<th></th>
 					<th><spring:message code="inventorypoc.designation" /></th>
 					<th><spring:message code="inventorypoc.unitsPerPack" /></th>
+					<th><spring:message code="inventorypoc.lot.number" /></th>
+					<th><spring:message code="inventorypoc.token.number" /></th>
+					<th><spring:message code="inventorypoc.creationdate" /></th>
 					<th><spring:message code="inventorypoc.expirationDate" /></th>
 					<th><spring:message code="inventorypoc.initial.quantity" /></th>
 					<th><spring:message
@@ -81,6 +84,9 @@ table.upload {
 						</spring:bind>
 						<td>${item.batch.drugPackage.drug.name}</td>
 						<td align="right" width="20px">${item.batch.drugPackage.totalQuantity}</td>
+						<td align="right" width="20px">${item.noteItem.lotNumber}</td>
+						<td align="right" width="20px">${item.noteItem.tokenNumber}</td>
+						<td align="right"> <fmt:formatDate value="${item.noteItem.dateCreated}" pattern="dd/MM/yyyy" /></td>
 						<td align="right"> <fmt:formatDate value="${item.batch.expireDate}" pattern="dd/MM/yyyy" /></td>
 						<td align="right" width="20px">${item.batch.packageQuantityUnits}</td>
 						<td align="right" width="20px">${item.batch.remainPackageQuantityUnits}</td>

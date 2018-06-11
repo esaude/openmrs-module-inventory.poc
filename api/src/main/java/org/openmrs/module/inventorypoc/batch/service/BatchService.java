@@ -46,6 +46,8 @@ public interface BatchService extends OpenmrsService {
 	
 	public List<Batch> findBatchesByDrugAndLocationAndNotExpiredDate(Drug drug, Location location, Date date);
 	
+	Double findCurrentStockBalance(Drug drug, Location location, Date date);
+	
 	public List<Batch> findAllAvailableStock(Location location, Date currentDate);
 	
 	Batch findBatchById(Integer batchId);

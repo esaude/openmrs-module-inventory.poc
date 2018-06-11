@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.batch.service.BatchService;
+import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
+import org.openmrs.module.inventorypoc.delivernote.service.DeliverNoteService;
 import org.openmrs.module.inventorypoc.inventor.model.Inventory;
 import org.openmrs.module.inventorypoc.inventor.service.InventoryService;
 import org.openmrs.module.inventorypoc.web.bean.ItemInventory;
@@ -94,9 +96,17 @@ public class StockAdjustmentController {
 	
 	private StockAdjust toInventory(final List<Batch> batchs) {
 		
+		final DeliverNoteService deliverNoteService = Context.getService(DeliverNoteService.class);
 		final List<ItemInventory> items = new ArrayList<>();
 		for (final Batch batch : batchs) {
-			items.add(new ItemInventory(batch));
+			
+			final List<DeliverNoteItem> deliverNotItems = deliverNoteService.findDeliverNoteItemsByBatchAndDrugPackage(
+			    batch, batch.getDrugPackage());
+			
+			for (final DeliverNoteItem deliverNoteItem : deliverNotItems) {
+				
+				items.add(new ItemInventory(batch, deliverNoteItem));
+			}
 		}
 		return new StockAdjust(items);
 	}

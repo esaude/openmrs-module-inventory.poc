@@ -21,7 +21,9 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Drug;
+import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
+import org.openmrs.module.inventorypoc.drugpackage.model.DrugPackage;
 
 public class DeliverNoteItemDAOImpl implements DeliverNoteItemDAO {
 	
@@ -78,5 +80,18 @@ public class DeliverNoteItemDAOImpl implements DeliverNoteItemDAO {
 			return list.iterator().next();
 		}
 		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DeliverNoteItem> findByBatchAndDrugPackage(final Batch batch, final DrugPackage drugPackage,
+	        final boolean retired) {
+		final Criteria searchCriteria = this.sessionFactory.getCurrentSession().createCriteria(DeliverNoteItem.class,
+		    "item");
+		searchCriteria.add(Restrictions.eq("item.batch", batch));
+		searchCriteria.add(Restrictions.eq("item.drugPackage", drugPackage));
+		searchCriteria.add(Restrictions.eq("item.retired", retired));
+		
+		return searchCriteria.list();
 	}
 }

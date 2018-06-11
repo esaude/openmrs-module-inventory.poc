@@ -14,15 +14,18 @@
 package org.openmrs.module.inventorypoc.delivernote.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openmrs.Drug;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.batch.service.BatchService;
 import org.openmrs.module.inventorypoc.delivernote.dao.DeliverNoteDAO;
 import org.openmrs.module.inventorypoc.delivernote.dao.DeliverNoteItemDAO;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNote;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
+import org.openmrs.module.inventorypoc.drugpackage.model.DrugPackage;
 import org.openmrs.module.inventorypoc.drugpackage.service.DrugPackageService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +53,7 @@ public interface DeliverNoteService extends OpenmrsService {
 	public DeliverNoteItem findDeliverNoteItemByLotAndTokenNumber(String lotNumber, String tokenNumber);
 	
 	public DeliverNoteItem findDeliverNoteItemByDrugAndLotNumber(Drug drug, String lotNumber);
+	
+	public List<DeliverNoteItem> findDeliverNoteItemsByBatchAndDrugPackage(final Batch batch, final DrugPackage drugPackage);
 	
 }

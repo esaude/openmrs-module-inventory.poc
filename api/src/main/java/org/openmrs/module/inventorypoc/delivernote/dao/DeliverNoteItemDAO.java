@@ -13,9 +13,13 @@
  */
 package org.openmrs.module.inventorypoc.delivernote.dao;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.openmrs.Drug;
+import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
+import org.openmrs.module.inventorypoc.drugpackage.model.DrugPackage;
 
 public interface DeliverNoteItemDAO {
 	
@@ -28,4 +32,6 @@ public interface DeliverNoteItemDAO {
 	DeliverNoteItem findByLotAndTokenNumber(final String lotNumber, String tokenNumber, boolean retired);
 	
 	DeliverNoteItem findByDrugAndLotNumber(Drug drug, String loteNumber, final boolean retired);
+	
+	List<DeliverNoteItem> findByBatchAndDrugPackage(Batch batch, DrugPackage drugPackage, boolean retired);
 }

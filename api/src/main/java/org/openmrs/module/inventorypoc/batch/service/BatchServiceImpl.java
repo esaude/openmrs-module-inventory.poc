@@ -70,6 +70,8 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 	public void createWasteDrug(final DrugOrder drugOrder, final Location location, final Double quantity,
 	        final Date date) throws Exception {
 		
+		this.batchValidator.validateWaste(drugOrder, location, quantity, date);
+		
 		final List<Batch> batches = this.batchDAO.findByDrugAndLocationAndNotExpiredDate(drugOrder.getDrug(), location,
 		    date, false);
 		
@@ -171,5 +173,34 @@ public class BatchServiceImpl extends BaseOpenmrsService implements BatchService
 	@Override
 	public Batch findBatchById(final Integer batchId) {
 		return this.batchDAO.findById(batchId);
+	}
+	
+	@Override
+	public Double findCurrentStockBalance(final Drug drug, final Location location, final Date date) {
+		
+		final List<Batch> batches = this.findBatchesByDrugAndLocationAndNotExpiredDate(drug, location, date);
+		
+		Double currentBalance = 0d;
+		
+		for (final Batch batch : batches) {
+			currentBalance = currentBalance + batch.getRemainPackageQuantityUnits();
+		}
+		
+		return currentBalance;
+	}
+	
+	private void processForExistingBatchesTmplate(final DrugOrder drugOrder, final List<Batch> batches,
+	        final Double quantity) {
+		
+		Double wasted = BatchServiceImpl.ZERO_DOUBLE_VALUE;
+		
+		for (final Batch batch : batches) {
+			Double availableQuantity = batch.getRemainPackageQuantityUnits();
+			
+			if (availableQuantity > quantity) {
+				availableQuantity -= quantity;
+				wasted = quantity;
+			}
+		}
 	}
 }
