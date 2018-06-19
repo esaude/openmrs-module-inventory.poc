@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.openmrs.module.inventorypoc.batch.model.Batch;
+import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
 
 public class ItemInventory implements Serializable, Comparable<ItemInventory> {
 	
@@ -17,8 +18,11 @@ public class ItemInventory implements Serializable, Comparable<ItemInventory> {
 	
 	private String reason;
 	
-	public ItemInventory(final Batch batch) {
+	private final DeliverNoteItem noteItem;
+	
+	public ItemInventory(final Batch batch, final DeliverNoteItem deliverNoteItem) {
 		this.batch = batch;
+		this.noteItem = deliverNoteItem;
 	}
 	
 	public boolean isSelected() {
@@ -47,6 +51,10 @@ public class ItemInventory implements Serializable, Comparable<ItemInventory> {
 	
 	public Batch getBatch() {
 		return this.batch;
+	}
+	
+	public DeliverNoteItem getNoteItem() {
+		return this.noteItem;
 	}
 	
 	@Override

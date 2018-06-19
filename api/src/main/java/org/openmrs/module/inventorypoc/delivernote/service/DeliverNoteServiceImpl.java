@@ -14,6 +14,7 @@
 package org.openmrs.module.inventorypoc.delivernote.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.openmrs.Drug;
@@ -181,5 +182,11 @@ public class DeliverNoteServiceImpl extends BaseOpenmrsService implements Delive
 	@Override
 	public DeliverNoteItem findDeliverNoteItemByDrugAndLotNumber(final Drug drug, final String lotNumber) {
 		return this.deliverNoteItemDAO.findByDrugAndLotNumber(drug, lotNumber, false);
+	}
+	
+	@Override
+	public List<DeliverNoteItem> findDeliverNoteItemsByBatchAndDrugPackage(final Batch batch,
+	        final DrugPackage drugPackage) {
+		return this.deliverNoteItemDAO.findByBatchAndDrugPackage(batch, drugPackage, false);
 	}
 }
