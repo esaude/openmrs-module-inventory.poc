@@ -31,29 +31,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface DeliverNoteService extends OpenmrsService {
-	
+
 	public void setDeliverNoteDAO(DeliverNoteDAO deliverNoteDAO);
-	
+
 	public void setDeliverNoteItemDAO(DeliverNoteItemDAO deliverNoteItemDAO);
-	
+
 	public void setDrugPackageService(DrugPackageService drugPackageService);
-	
+
 	public void setBatchService(BatchService batchService);
-	
+
 	public void setLocationService(LocationService locationService);
-	
+
 	public DeliverNote createDeliverNote(DeliverNote deliverNote);
-	
+
 	public void importDeliverNote(DeliverNote deliverNote);
-	
+
 	public DeliverNote findBySimamNumberAndDeliveryDate(String simamNumber, Date deliveryDate);
-	
+
 	public DeliverNoteItem findDeliverNoteItemByTokenNumber(String tokenNumber);
-	
+
 	public DeliverNoteItem findDeliverNoteItemByLotAndTokenNumber(String lotNumber, String tokenNumber);
-	
+
 	public DeliverNoteItem findDeliverNoteItemByDrugAndLotNumber(Drug drug, String lotNumber);
-	
-	public List<DeliverNoteItem> findDeliverNoteItemsByBatchAndDrugPackage(final Batch batch, final DrugPackage drugPackage);
-	
+
+	public List<DeliverNoteItem> findDeliverNoteItemsByBatchAndDrugPackage(final Batch batch,
+			final DrugPackage drugPackage);
 }
