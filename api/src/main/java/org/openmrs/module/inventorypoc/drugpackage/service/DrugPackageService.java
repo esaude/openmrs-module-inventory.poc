@@ -28,7 +28,7 @@ public interface DrugPackageService extends OpenmrsService {
 	
 	public DrugPackage fingDrugPackageById(Integer id);
 	
-	public DrugPackage findDrugPackageByDrugAndTotalQuantity(final Drug drug, Double totalQuantity);
+	public DrugPackage findDrugPackageByDrug(final Drug drug);
 	
 	public Drug findDrugByDrugFNMCode(String fnmCode);
 }

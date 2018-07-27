@@ -19,7 +19,9 @@ import java.util.UUID;
 
 import org.openmrs.Drug;
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.inventorypoc.batch.model.Batch;
 import org.openmrs.module.inventorypoc.batch.model.BatchEntry.BatchOperationType;
@@ -153,12 +155,20 @@ public class DeliverNoteServiceImpl extends BaseOpenmrsService implements Delive
 		
 		final Drug drug = this.drugPackageService.findDrugByDrugFNMCode(drugPackage.getBarcode());
 		
-		final DrugPackage foundDrugPackage = this.drugPackageService.findDrugPackageByDrugAndTotalQuantity(drug,
-		    drugPackage.getTotalQuantity());
+		final DrugPackage foundDrugPackage = this.drugPackageService.findDrugPackageByDrug(drug);
 		
 		if (foundDrugPackage == null) {
 			drugPackage.setDrug(drug);
 			return this.drugPackageService.saveDrugPackage(drugPackage);
+		}
+		
+		if (foundDrugPackage.getTotalQuantity().compareTo(drugPackage.getTotalQuantity()) != 0) {
+			
+			throw new APIException(
+			        Context.getMessageSourceService().getMessage("inventorypoc.error.drugpackage.already.exists",
+			            new String[] { foundDrugPackage.getDrug().getDisplayName(), foundDrugPackage.getBarcode(),
+			                    foundDrugPackage.getTotalQuantity().toString() },
+			            Context.getLocale()));
 		}
 		return foundDrugPackage;
 	}

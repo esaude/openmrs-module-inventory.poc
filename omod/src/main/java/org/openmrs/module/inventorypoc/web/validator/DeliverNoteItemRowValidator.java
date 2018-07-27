@@ -9,6 +9,7 @@ import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.inventorypoc.delivernote.model.DeliverNoteItem;
 import org.openmrs.module.inventorypoc.delivernote.service.DeliverNoteService;
+import org.openmrs.module.inventorypoc.drugpackage.model.DrugPackage;
 import org.openmrs.module.inventorypoc.drugpackage.service.DrugPackageService;
 import org.openmrs.module.inventorypoc.web.bean.DeliverNoteItemRow;
 import org.springframework.stereotype.Component;
@@ -67,6 +68,7 @@ public class DeliverNoteItemRowValidator implements Validator {
 		this.validateDoubleNumber(item.getDeliveredQuantity(), "deliveredQuantity", errors);
 		this.validateDoubleNumber(item.getUnitPrice(), "unitPrice", errors);
 		this.validateAuthorizedAndDeliveredQuantites(item, errors);
+		this.validateExistingDrugPackage(item.getFnmCode(), item.getTotalPackageUnits(), errors);
 		this.validateRowNotLoaded(item, errors);
 	}
 	
@@ -136,6 +138,34 @@ public class DeliverNoteItemRowValidator implements Validator {
 			
 			if (deliverNoteItem != null) {
 				errors.rejectValue("designation", "inventorypoc.error.row.already.loaded");
+			}
+		}
+	}
+	
+	private void validateExistingDrugPackage(final String fnmCode, final String totalQuantityText,
+	        final Errors errors) {
+		
+		if (NumberUtils.isNumber(totalQuantityText)) {
+			
+			final double totalQuantity = NumberUtils.toDouble(totalQuantityText);
+			final DrugPackageService drugPackageService = Context.getService(DrugPackageService.class);
+			
+			if (StringUtils.isNotBlank(fnmCode)) {
+				
+				final Drug drug = drugPackageService.findDrugByDrugFNMCode(fnmCode);
+				
+				if (drug != null) {
+					
+					final DrugPackage drugPackage = drugPackageService.findDrugPackageByDrug(drug);
+					
+					if ((drugPackage != null) && (drugPackage.getTotalQuantity().compareTo(totalQuantity) != 0)) {
+						
+						errors.rejectValue(
+						    "totalPackageUnits", "inventorypoc.error.drugpackage.already.exists", new String[] {
+						            drug.getDisplayName(), fnmCode, drugPackage.getTotalQuantity().toString() },
+						    null);
+					}
+				}
 			}
 		}
 	}
