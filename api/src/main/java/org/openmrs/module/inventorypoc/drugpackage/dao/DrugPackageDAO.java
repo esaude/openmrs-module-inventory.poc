@@ -25,7 +25,7 @@ public interface DrugPackageDAO {
 	
 	public DrugPackage findById(Integer id);
 	
-	public DrugPackage findByDrugAndTotalQuantity(Drug drug, Double totalQuantity);
+	public DrugPackage findByDrug(Drug drug);
 	
 	public Drug findDrugByFNMCode(String fnmCode);
 	

@@ -48,12 +48,11 @@ public class DrugPackageDAOImpl implements DrugPackageDAO {
 	}
 	
 	@Override
-	public DrugPackage findByDrugAndTotalQuantity(final Drug drug, final Double totalQuantity) {
+	public DrugPackage findByDrug(final Drug drug) {
 		
 		final Criteria searchCriteria = this.sessionFactory.getCurrentSession().createCriteria(DrugPackage.class,
 		    "drugPackage");
 		searchCriteria.add(Restrictions.eq("drugPackage.drug", drug));
-		searchCriteria.add(Restrictions.eq("drugPackage.totalQuantity", totalQuantity));
 		
 		return (DrugPackage) searchCriteria.uniqueResult();
 	}

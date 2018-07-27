@@ -41,9 +41,9 @@ public class DrugPackageServiceImpl extends BaseOpenmrsService implements DrugPa
 	}
 	
 	@Override
-	public DrugPackage findDrugPackageByDrugAndTotalQuantity(final Drug drug, final Double totalQuantity) {
+	public DrugPackage findDrugPackageByDrug(final Drug drug) {
 		
-		return this.drugPackageDAO.findByDrugAndTotalQuantity(drug, totalQuantity);
+		return this.drugPackageDAO.findByDrug(drug);
 	}
 	
 	@Override
